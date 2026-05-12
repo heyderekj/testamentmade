@@ -20,17 +20,20 @@ import { apps } from '../data/apps';
         </div>
         <div class="tm-hero-blobs__foreground">
           <h1 class="heading">
-            Study Scripture, shrink files, sort downloads — made by{' '}
-            <span class="author-hit" tabindex="0" role="group" aria-label="Testament Made LLC — Derek Castelli">
-              Testament Made LLC.
-              <a
-                class="about-chip"
-                href="https://heyderekj.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                About Derek Castelli<span class="about-chip__arrow" aria-hidden="true">→</span>
-              </a>
+            <span class="heading__lead">Apps to study Scripture, shrink files, and sort downloads —</span>
+            <span class="heading__tail">
+              made by{' '}
+              <span class="author-hit" tabindex="0" role="group" aria-label="Testament Made LLC — Derek Castelli">
+                Testament Made LLC.
+                <a
+                  class="about-chip"
+                  href="https://heyderekj.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  About Derek Castelli<span class="about-chip__arrow" aria-hidden="true">→</span>
+                </a>
+              </span>
             </span>
           </h1>
 
@@ -58,7 +61,7 @@ import { apps } from '../data/apps';
     z-index: 1;
     max-width: var(--max);
     margin: 0 auto;
-    padding: clamp(2rem, 5vw, 3rem) var(--page-pad-x) 2rem;
+    padding: clamp(1.5rem, 4vw, 2.5rem) var(--page-pad-x) 2rem;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -71,7 +74,7 @@ import { apps } from '../data/apps';
     flex-direction: column;
     justify-content: flex-start;
     gap: clamp(2rem, 5vw, 3rem);
-    padding: clamp(2.75rem, 10vh, 5rem) 0 2rem;
+    padding: 2rem 0;
   }
 
   .tm-hero-blobs {
@@ -98,13 +101,23 @@ import { apps } from '../data/apps';
 
   .heading {
     margin: 0 auto;
-    max-width: 22ch;
+    max-width: 28ch;
     text-align: center;
     font-weight: 600;
     font-size: clamp(1.75rem, 4.5vw, 2.75rem);
     line-height: 1.2;
     letter-spacing: -0.02em;
     color: var(--text);
+  }
+
+  @media (min-width: 52rem) {
+    .heading {
+      max-width: 38ch;
+    }
+
+    .heading__lead {
+      display: block;
+    }
   }
 
   .nowrap {
