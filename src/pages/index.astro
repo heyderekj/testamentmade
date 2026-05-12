@@ -6,14 +6,22 @@ import { apps } from '../data/apps';
 
 <Layout
   title="Testament Made"
-  description="Testament Made LLC — Dinky, Binky, and Harvous. Contact and product links."
+  description="Testament Made LLC — Harvous, Dinky, and Binky. Contact and product links."
   preloadImages={apps.map((a) => a.iconSrc)}
 >
   <div class="page">
     <main class="main">
       <h1 class="heading">
-        Apps for shrinking files, sorting downloads, and studying Scripture — made by
-        <span class="nowrap">Testament Made LLC.</span>
+        Apps for studying Scripture, shrinking files, and sorting downloads — made by{' '}
+        <span class="author-swap">
+          <span class="author-swap__legal">Testament Made LLC.</span>
+          <a
+            class="author-swap__link"
+            href="https://heyderekj.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            >which is just Derek Castelli.</a>
+        </span>
       </h1>
 
       <div class="grid">
@@ -29,6 +37,8 @@ import { apps } from '../data/apps';
 
 <style>
   .page {
+    position: relative;
+    z-index: 1;
     max-width: var(--max);
     margin: 0 auto;
     padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1.25rem, 4vw, 2rem) 2rem;
@@ -61,6 +71,65 @@ import { apps } from '../data/apps';
     white-space: nowrap;
   }
 
+  /* Hover / focus: “Testament Made LLC.” ↔ linked byline */
+  .author-swap {
+    display: inline-grid;
+    vertical-align: baseline;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .author-swap > * {
+    grid-area: 1 / 1;
+    transition:
+      opacity 0.2s ease,
+      visibility 0.2s ease;
+  }
+
+  .author-swap__legal {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .author-swap__link {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    font-weight: inherit;
+    font-size: inherit;
+    letter-spacing: inherit;
+    line-height: inherit;
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.12em;
+  }
+
+  .author-swap:hover .author-swap__legal,
+  .author-swap:focus-within .author-swap__legal {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .author-swap:hover .author-swap__link,
+  .author-swap:focus-within .author-swap__link {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .author-swap__link:hover,
+  .author-swap__link:focus-visible {
+    color: var(--text);
+  }
+
+  .author-swap__link:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
   /* Bento: 3 equal columns on wide screens; single column on narrow */
   .grid {
     display: grid;
@@ -72,6 +141,43 @@ import { apps } from '../data/apps';
   @media (min-width: 52rem) {
     .grid {
       grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  /* Easter egg (#8): Binky hover — playful fan-out while messy */
+  @media (prefers-reduced-motion: no-preference) {
+    .grid.is-messy :global(.app-card) {
+      transition:
+        transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.28s ease;
+    }
+
+    .grid.is-messy :global(.app-card:nth-child(1)) {
+      transform: rotate(-3deg) translate(-8px, 6px);
+    }
+
+    .grid.is-messy :global(.app-card:nth-child(2)) {
+      transform: rotate(2deg) translate(0, -6px);
+    }
+
+    .grid.is-messy :global(.app-card:nth-child(3)) {
+      transform: rotate(4deg) translate(8px, 4px);
+    }
+
+    .grid.is-messy :global(.app-card:nth-child(1):hover),
+    .grid.is-messy :global(.app-card:nth-child(1):focus-visible) {
+      transform: rotate(-3deg) translate(-8px, 6px) scale(1.02);
+    }
+
+    .grid.is-messy :global(.app-card:nth-child(2):hover),
+    .grid.is-messy :global(.app-card:nth-child(2):focus-visible) {
+      transform: rotate(2deg) translate(0, -6px) scale(1.02);
+    }
+
+    .grid.is-messy :global(.app-card:nth-child(3):hover),
+    .grid.is-messy :global(.app-card:nth-child(3):focus-visible) {
+      transform: rotate(4deg) translate(8px, 4px) scale(1.02);
     }
   }
 
@@ -100,3 +206,214 @@ import { apps } from '../data/apps';
     border-radius: 4px;
   }
 </style>
+
+<script is:inline>
+  (function tmHoldingEggs() {
+    var mqReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var mqCoarse = window.matchMedia('(pointer: coarse)');
+
+    /** #13 Cursor parallax blobs (skip coarse pointer / reduced motion) */
+    var rafId = 0;
+    var targetX = 0.5;
+    var targetY = 0.5;
+    if (!mqReduce.matches && !mqCoarse.matches) {
+      window.addEventListener(
+        'pointermove',
+        function (e) {
+          targetX = e.clientX / window.innerWidth;
+          targetY = e.clientY / window.innerHeight;
+          if (rafId) return;
+          rafId = window.requestAnimationFrame(function () {
+            rafId = 0;
+            document.body.style.setProperty('--cursor-x-norm', String(targetX));
+            document.body.style.setProperty('--cursor-y-norm', String(targetY));
+          });
+        },
+        { passive: true },
+      );
+    }
+
+    var dinky = document.querySelector('[data-app="dinky"]');
+
+    /** #7 Drop files on Dinky → toast linking to site */
+    var toastHideTimer = null;
+    function fadeOutRemoveToast(el) {
+      if (!el || !el.parentNode) return;
+      el.classList.remove('is-visible');
+      window.setTimeout(function () {
+        if (el.parentNode) el.remove();
+      }, 380);
+    }
+    function dismissToastImmediately(el) {
+      if (toastHideTimer !== null) {
+        window.clearTimeout(toastHideTimer);
+        toastHideTimer = null;
+      }
+      if (el && el.parentNode) el.remove();
+    }
+
+    function showDinkyToast(fileCount) {
+      var old = document.querySelector('.tm-toast');
+      if (old) dismissToastImmediately(old);
+
+      var plural = fileCount !== 1;
+      var msg = plural
+        ? 'Want to actually shrink those? Try Dinky — dinkyfiles.com'
+        : 'Want to actually shrink that? Try Dinky — dinkyfiles.com';
+
+      var a = document.createElement('a');
+      a.className = 'tm-toast';
+      a.href = 'https://dinkyfiles.com/';
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.setAttribute('role', 'status');
+      a.setAttribute('aria-live', 'polite');
+      a.textContent = msg;
+      document.body.appendChild(a);
+
+      window.requestAnimationFrame(function () {
+        a.classList.add('is-visible');
+      });
+
+      toastHideTimer = window.setTimeout(function () {
+        toastHideTimer = null;
+        fadeOutRemoveToast(a);
+      }, 4500);
+
+      a.addEventListener('click', function () {
+        if (toastHideTimer !== null) {
+          window.clearTimeout(toastHideTimer);
+          toastHideTimer = null;
+        }
+      });
+    }
+
+    function hasFilePayload(dt) {
+      if (!dt || !dt.types) return false;
+      for (var i = 0; i < dt.types.length; i++) {
+        if (dt.types[i] === 'Files') return true;
+      }
+      return false;
+    }
+
+    if (dinky) {
+      document.addEventListener(
+        'dragover',
+        function (e) {
+          if (!hasFilePayload(e.dataTransfer)) return;
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'copy';
+          var el = document.elementFromPoint(e.clientX, e.clientY);
+          if (el && dinky.contains(el)) dinky.classList.add('is-drop-target');
+          else dinky.classList.remove('is-drop-target');
+        },
+        { passive: false },
+      );
+
+      document.addEventListener('dragend', function () {
+        dinky.classList.remove('is-drop-target');
+      });
+
+      document.addEventListener('drop', function (e) {
+        dinky.classList.remove('is-drop-target');
+        if (!hasFilePayload(e.dataTransfer)) return;
+        if (!dinky || !e.target || !dinky.contains(e.target)) return;
+        e.preventDefault();
+        var n = e.dataTransfer.files ? e.dataTransfer.files.length : 0;
+        if (n > 0) showDinkyToast(n);
+      });
+    }
+
+    /** #8 Binky hover → tidy/messy grid */
+    var grid = document.querySelector('.grid');
+    var binky = document.querySelector('[data-app="binky"]');
+    var messyTimer = 0;
+    if (grid && binky && !mqReduce.matches) {
+      binky.addEventListener('pointerenter', function () {
+        window.clearTimeout(messyTimer);
+        grid.classList.add('is-messy');
+      });
+      binky.addEventListener('pointerleave', function () {
+        messyTimer = window.setTimeout(function () {
+          grid.classList.remove('is-messy');
+        }, 150);
+      });
+    }
+
+    /** #9 Selection → Harvous chip */
+    var chip = document.createElement('a');
+    chip.href = 'https://harvous.com/';
+    chip.target = '_blank';
+    chip.rel = 'noopener noreferrer';
+    chip.className = 'tm-quote-chip';
+    chip.setAttribute(
+      'aria-label',
+      'Open Harvous — save passages and highlights as notes.',
+    );
+    chip.innerHTML =
+      'Save this to Harvous <span class="tm-quote-chip-arrow" aria-hidden="true">→</span>';
+    document.body.appendChild(chip);
+
+    var page = document.querySelector('.page');
+    var selRaf = 0;
+
+    function selInPage(sel) {
+      if (!sel || sel.rangeCount === 0 || !page) return false;
+      var node = sel.anchorNode;
+      if (!node || node.nodeType === 9) return false;
+      return page.contains(node);
+    }
+
+    function placeChip(sel) {
+      try {
+        var range = sel.getRangeAt(0);
+        var rects = range.getClientRects();
+        if (!rects || rects.length === 0) return false;
+        var last = rects[rects.length - 1];
+        var margin = 6;
+        var x = Math.round(last.left + margin);
+        var y = Math.round(last.bottom + margin);
+        var approxW = 220;
+        var approxH = 40;
+        x = Math.max(8, Math.min(x, window.innerWidth - approxW - 8));
+        y = Math.max(8, Math.min(y, window.innerHeight - approxH - 8));
+        chip.style.left = x + 'px';
+        chip.style.top = y + 'px';
+        return true;
+      } catch (e2) {
+        return false;
+      }
+    }
+
+    function updateChip() {
+      var sel = window.getSelection();
+      var txt = sel ? sel.toString().trim() : '';
+      if (!txt || !selInPage(sel)) {
+        chip.classList.remove('is-visible');
+        return;
+      }
+      if (!placeChip(sel)) {
+        chip.classList.remove('is-visible');
+        return;
+      }
+      chip.classList.add('is-visible');
+    }
+
+    document.addEventListener('selectionchange', function () {
+      window.cancelAnimationFrame(selRaf);
+      selRaf = window.requestAnimationFrame(updateChip);
+    });
+
+    window.addEventListener(
+      'scroll',
+      function () {
+        chip.classList.remove('is-visible');
+      },
+      true,
+    );
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') chip.classList.remove('is-visible');
+    });
+  })();
+</script>

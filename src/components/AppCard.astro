@@ -3,12 +3,14 @@ import type { AppEntry } from '../data/apps';
 
 type Props = AppEntry & { index: number };
 
-const { title, tags, href, iconSrc, linkLabel, index } = Astro.props;
+const { title, tags, href, iconSrc, linkLabel, slug, index } = Astro.props;
 const tagLine = tags.join(' · ');
 ---
 
 <a
   class="app-card"
+  id={`card-${slug}`}
+  data-app={slug}
   href={href}
   target="_blank"
   rel="noopener noreferrer"
@@ -120,6 +122,13 @@ const tagLine = tags.join(' · ');
     font-size: 0.82rem;
     font-weight: 500;
     color: var(--muted);
+  }
+
+  .app-card.is-drop-target {
+    outline: 2px dashed var(--accent);
+    outline-offset: 4px;
+    border-radius: inherit;
+    background: rgba(37, 99, 235, 0.04);
   }
 
   @keyframes card-in {

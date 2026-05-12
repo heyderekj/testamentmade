@@ -1,4 +1,5 @@
 export type AppEntry = {
+  slug: 'harvous' | 'dinky' | 'binky';
   title: string;
   /** Short line under the title (tags row) */
   tags: string[];
@@ -14,6 +15,7 @@ export type AppEntry = {
 
 export const apps: AppEntry[] = [
   {
+    slug: 'harvous',
     title: 'Harvous',
     tags: ['Web', 'Bible study'],
     description:
@@ -23,6 +25,7 @@ export const apps: AppEntry[] = [
     linkLabel: 'harvous.com',
   },
   {
+    slug: 'dinky',
     title: 'Dinky',
     tags: ['macOS', 'Utilities'],
     description: 'Shrink images, videos, and PDFs — drag, compress, done.',
@@ -31,6 +34,7 @@ export const apps: AppEntry[] = [
     linkLabel: 'dinkyfiles.com',
   },
   {
+    slug: 'binky',
     title: 'Binky',
     tags: ['macOS', 'Productivity'],
     description: 'Sorts your Downloads into sensible folders — nothing gets lost.',

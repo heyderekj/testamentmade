@@ -8,7 +8,7 @@ type Props = {
 
 const {
   title = 'Testament Made',
-  description = 'Apps from Testament Made LLC — Dinky, Binky, and Harvous.',
+  description = 'Apps from Testament Made LLC — Harvous, Dinky, and Binky.',
   preloadImages = [],
 } = Astro.props;
 ---
@@ -33,6 +33,11 @@ const {
     <title>{title}</title>
   </head>
   <body>
+    <div class="tm-bg" aria-hidden="true">
+      <span class="tm-bg__blob tm-bg__blob--pink"></span>
+      <span class="tm-bg__blob tm-bg__blob--indigo"></span>
+      <span class="tm-bg__blob tm-bg__blob--blue"></span>
+    </div>
     <slot />
   </body>
 </html>
@@ -65,9 +70,165 @@ const {
 
   body {
     margin: 0;
+    position: relative;
     min-height: 100vh;
     color: var(--text);
     background: var(--bg);
     line-height: 1.5;
+    /* Cursor parallax blobs (normalized 0–1, set by JS) */
+    --cursor-x-norm: 0.5;
+    --cursor-y-norm: 0.5;
+  }
+
+  .tm-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    contain: strict;
+  }
+
+  .tm-bg__blob {
+    position: absolute;
+    width: min(120vmin, 58rem);
+    height: min(120vmin, 58rem);
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.32;
+    will-change: transform;
+    transition: transform 120ms linear;
+  }
+
+  @media (prefers-reduced-motion: reduce), (pointer: coarse) {
+    .tm-bg__blob {
+      transition: none;
+    }
+  }
+
+  /* Parallax drift toward cursor (multipliers differentiate layers) */
+  .tm-bg__blob--pink {
+    left: -15%;
+    top: -5%;
+    background: radial-gradient(
+      circle closest-side at 50% 50%,
+      rgba(244, 29, 104, 0.95),
+      transparent 72%
+    );
+    transform: translate(
+      calc((var(--cursor-x-norm) - 0.5) * 28vmin),
+      calc((var(--cursor-y-norm) - 0.5) * 28vmin)
+    );
+  }
+
+  .tm-bg__blob--indigo {
+    left: 25%;
+    top: 40%;
+    background: radial-gradient(
+      circle closest-side at 50% 50%,
+      rgba(67, 56, 232, 0.9),
+      transparent 70%
+    );
+    transform: translate(
+      calc((var(--cursor-x-norm) - 0.5) * -18vmin),
+      calc((var(--cursor-y-norm) - 0.5) * 16vmin)
+    );
+  }
+
+  .tm-bg__blob--blue {
+    right: -12%;
+    top: 5%;
+    left: auto;
+    background: radial-gradient(
+      circle closest-side at 50% 50%,
+      rgba(0, 149, 255, 0.92),
+      transparent 68%
+    );
+    transform: translate(
+      calc((var(--cursor-x-norm) - 0.5) * 22vmin),
+      calc((var(--cursor-y-norm) - 0.5) * -20vmin)
+    );
+  }
+
+  .tm-toast {
+    box-sizing: border-box;
+    position: fixed;
+    left: 50%;
+    bottom: max(1.25rem, env(safe-area-inset-bottom));
+    z-index: 50;
+    max-width: min(22rem, calc(100vw - 2rem));
+    transform: translateX(-50%) translateY(8px);
+    padding: 0.85rem 1.1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text);
+    background: #fff;
+    border: 1px solid rgba(15, 23, 42, 0.09);
+    border-radius: 0.875rem;
+    box-shadow:
+      0 2px 8px rgba(15, 23, 42, 0.08),
+      0 12px 32px rgba(15, 23, 42, 0.12);
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      opacity 0.35s ease,
+      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .tm-toast.is-visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
+  }
+
+  .tm-quote-chip {
+    box-sizing: border-box;
+    position: fixed;
+    z-index: 40;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.35rem 0.65rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text);
+    text-decoration: none;
+    background: #fff;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 999px;
+    box-shadow:
+      0 1px 3px rgba(15, 23, 42, 0.06),
+      0 6px 20px rgba(15, 23, 42, 0.1);
+    white-space: nowrap;
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(6px);
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease,
+      visibility 0s linear 0.2s;
+  }
+
+  .tm-quote-chip:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .tm-quote-chip.is-visible {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease,
+      visibility 0s linear 0s;
+  }
+
+  .tm-quote-chip-arrow {
+    font-size: 0.85rem;
+    line-height: 1;
   }
 </style>
