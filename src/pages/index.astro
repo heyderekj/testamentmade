@@ -20,7 +20,7 @@ import { apps } from '../data/apps';
         </div>
         <div class="tm-hero-blobs__foreground">
           <h1 class="heading">
-            <span class="heading__lead">Take notes, shrink files, and sort downloads.</span>
+            <span class="heading__lead">Take notes, shrink files, and sort downloads.</span>{' '}
             <span class="heading__tail">
               Apps by{' '}
               <span class="author-hit" tabindex="0" role="group" aria-label="Testament Made LLC, Derek Castelli">
@@ -151,12 +151,9 @@ import { apps } from '../data/apps';
     text-wrap: pretty;
   }
 
-  .heading__lead {
-    display: block;
-  }
-
+  .heading__lead,
   .heading__tail {
-    display: block;
+    display: inline;
   }
 
   @media (min-width: 52rem) {
@@ -166,6 +163,11 @@ import { apps } from '../data/apps';
 
     .heading {
       max-width: min(48ch, 100%);
+    }
+
+    .heading__lead,
+    .heading__tail {
+      display: block;
     }
   }
 
