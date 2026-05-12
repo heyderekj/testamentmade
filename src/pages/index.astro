@@ -318,6 +318,15 @@ import { apps } from '../data/apps';
     display: none;
   }
 
+  /* Room for card box-shadow + icon drop-shadow inside overflow (carousel only). */
+  @media (max-width: 51.99rem) {
+    .app-showcase__viewport {
+      padding-block: clamp(1rem, 3.25vw, 1.625rem);
+      padding-inline: clamp(0.35rem, 1.75vw, 0.75rem);
+      scroll-padding-inline: clamp(0.35rem, 1.75vw, 0.75rem);
+    }
+  }
+
   .app-showcase__viewport:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 4px;
