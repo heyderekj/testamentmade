@@ -1,7 +1,7 @@
 /** Heroicons 24×24 solid — same library as dinkyfiles.com `.feature-icon` SVGs */
 export const CORE_VALUE_ICONS = [
   'scale',
-  'book-open',
+  'heart',
   'computer-desktop',
   'code-bracket',
   'moon',
@@ -30,7 +30,7 @@ export const coreValues: CoreValue[] = [
     title: 'Depth over noise',
     description:
       'We build for careful work—reading, creating, organizing—not for endless distraction or dark patterns.',
-    icon: 'book-open',
+    icon: 'heart',
   },
   {
     title: 'On-device by default',

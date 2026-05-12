@@ -127,17 +127,11 @@ const {
     box-sizing: border-box;
   }
 
-  html {
-    /* Wide blurred orbs must not widen document scroll width */
-    overflow-x: clip;
-  }
-
   body {
     margin: 0;
     position: relative;
     min-height: 100vh;
     min-height: 100dvh;
-    overflow-x: clip;
     color: var(--text);
     background: var(--bg);
     line-height: 1.5;
@@ -148,8 +142,8 @@ const {
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    /* Blur + large drift extend far past inset; paint containment also clips */
-    overflow: visible;
+    /* Clip to hero only (sibling foreground is not clipped). Stops extra scroll past footer from blur overflow. */
+    overflow: hidden;
   }
 
   .tm-bg__blob {
@@ -166,60 +160,60 @@ const {
   @keyframes tm-drift-aurora {
     0%,
     100% {
-      transform: translate3d(-6vmin, 2vmin, 0) rotate(-1.8deg);
+      transform: translate3d(-5vmin, -2vmin, 0) rotate(-1.8deg);
     }
     22% {
-      transform: translate3d(10vmin, -5vmin, 0) rotate(1.2deg);
+      transform: translate3d(8vmin, -7vmin, 0) rotate(1.2deg);
     }
     44% {
-      transform: translate3d(5vmin, 11vmin, 0) rotate(2.3deg);
+      transform: translate3d(4vmin, 4vmin, 0) rotate(2.3deg);
     }
     66% {
-      transform: translate3d(-11vmin, -4vmin, 0) rotate(-1deg);
+      transform: translate3d(-9vmin, -6vmin, 0) rotate(-1deg);
     }
     85% {
-      transform: translate3d(7vmin, 6vmin, 0) rotate(0.6deg);
+      transform: translate3d(6vmin, 2vmin, 0) rotate(0.6deg);
     }
   }
 
   @keyframes tm-drift-nebula {
     0%,
     100% {
-      transform: translate3d(4vmin, -3vmin, 0) rotate(1.1deg);
+      transform: translate3d(3vmin, -6vmin, 0) rotate(1.1deg);
     }
     18% {
-      transform: translate3d(-9vmin, 6vmin, 0) rotate(-2.4deg);
+      transform: translate3d(-8vmin, 2vmin, 0) rotate(-2.4deg);
     }
     38% {
-      transform: translate3d(8vmin, 9vmin, 0) rotate(0.4deg);
+      transform: translate3d(7vmin, 5vmin, 0) rotate(0.4deg);
     }
     58% {
-      transform: translate3d(-5vmin, -8vmin, 0) rotate(2deg);
+      transform: translate3d(-5vmin, -9vmin, 0) rotate(2deg);
     }
     78% {
-      transform: translate3d(11vmin, 2vmin, 0) rotate(-1.2deg);
+      transform: translate3d(9vmin, -3vmin, 0) rotate(-1.2deg);
     }
   }
 
   @keyframes tm-drift-tide {
     0%,
     100% {
-      transform: translate3d(3vmin, 5vmin, 0) rotate(0deg);
+      transform: translate3d(2vmin, -3vmin, 0) rotate(0deg);
     }
     14% {
-      transform: translate3d(-12vmin, -4vmin, 0) rotate(-2.5deg);
+      transform: translate3d(-10vmin, -8vmin, 0) rotate(-2.5deg);
     }
     35% {
-      transform: translate3d(9vmin, -7vmin, 0) rotate(1.5deg);
+      transform: translate3d(8vmin, -9vmin, 0) rotate(1.5deg);
     }
     56% {
-      transform: translate3d(-4vmin, 12vmin, 0) rotate(-0.8deg);
+      transform: translate3d(-3vmin, 5vmin, 0) rotate(-0.8deg);
     }
     76% {
-      transform: translate3d(10vmin, 4vmin, 0) rotate(2.2deg);
+      transform: translate3d(9vmin, -2vmin, 0) rotate(2.2deg);
     }
     92% {
-      transform: translate3d(-8vmin, -6vmin, 0) rotate(-1.4deg);
+      transform: translate3d(-7vmin, -7vmin, 0) rotate(-1.4deg);
     }
   }
 
@@ -239,7 +233,7 @@ const {
 
   .tm-bg__blob--pink {
     right: -12%;
-    top: 5%;
+    top: -2%;
     left: auto;
     background: radial-gradient(
       circle closest-side at 50% 50%,
@@ -249,8 +243,8 @@ const {
   }
 
   .tm-bg__blob--indigo {
-    left: 25%;
-    top: 12%;
+    left: 48%;
+    top: 8%;
     background: radial-gradient(
       circle closest-side at 50% 50%,
       var(--blob-indigo),
@@ -260,7 +254,7 @@ const {
 
   .tm-bg__blob--blue {
     left: -15%;
-    top: -5%;
+    top: -14%;
     right: auto;
     background: radial-gradient(
       circle closest-side at 50% 50%,
