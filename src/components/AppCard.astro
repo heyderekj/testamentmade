@@ -3,7 +3,7 @@ import type { AppEntry } from '../data/apps';
 
 type Props = AppEntry & { index: number };
 
-const { title, tags, href, iconSrc, linkLabel, description, index } = Astro.props;
+const { title, tags, href, iconSrc, linkLabel, index } = Astro.props;
 const tagLine = tags.join(' · ');
 ---
 
@@ -17,7 +17,6 @@ const tagLine = tags.join(' · ');
   <span class="app-card__media" aria-hidden="true">
     <img class="app-card__icon" src={iconSrc} alt="" width="120" height="120" loading="lazy" decoding="async" />
   </span>
-  {description && <p class="app-card__description">{description}</p>}
   <span class="app-card__footer">
     <span class="app-card__meta">
       <span class="app-card__title">{title}</span>
@@ -77,14 +76,6 @@ const tagLine = tags.join(' · ');
     object-fit: contain;
     border-radius: 22%;
     filter: drop-shadow(0 12px 28px rgba(15, 23, 42, 0.12));
-  }
-
-  .app-card__description {
-    margin: 0;
-    font-size: 0.95rem;
-    line-height: 1.45;
-    color: var(--muted);
-    max-width: 36ch;
   }
 
   .app-card__footer {

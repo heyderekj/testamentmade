@@ -9,16 +9,11 @@ import { apps } from '../data/apps';
   description="Testament Made LLC — Dinky, Binky, and Harvous. Contact and product links."
 >
   <div class="page">
-    <header class="header">
-      <a class="wordmark" href="/">testamentmade.com</a>
-      <a class="contact" href="mailto:derek@testamentmade.com">derek@testamentmade.com</a>
-    </header>
-
     <main class="main">
-      <p class="lede">
+      <h1 class="heading">
         Apps for shrinking files, sorting downloads, and studying Scripture — built by
         <span class="nowrap">Testament Made LLC.</span>
-      </p>
+      </h1>
 
       <div class="grid">
         {apps.map((app, index) => <AppCard {...app} index={index} />)}
@@ -26,23 +21,7 @@ import { apps } from '../data/apps';
     </main>
 
     <footer class="footer">
-      <p class="footer__line">© {new Date().getFullYear()} Testament Made LLC</p>
-      {
-        apps.some((a) => a.privacyHref) && (
-          <ul class="footer__privacy">
-            {apps.map(
-              (a) =>
-                a.privacyHref && (
-                  <li>
-                    <a href={a.privacyHref}>
-                      {a.title} privacy
-                    </a>
-                  </li>
-                ),
-            )}
-          </ul>
-        )
-      }
+      © {new Date().getFullYear()} Testament Made, LLC · <a href="mailto:derek@testamentmade.com">derek@testamentmade.com</a>
     </footer>
   </div>
 </Layout>
@@ -51,70 +30,30 @@ import { apps } from '../data/apps';
   .page {
     max-width: var(--max);
     margin: 0 auto;
-    padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1.25rem, 4vw, 2rem) 3rem;
+    padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1.25rem, 4vw, 2rem) 2rem;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    gap: 2.5rem;
-  }
-
-  .header {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 0.75rem 1.5rem;
-  }
-
-  .wordmark {
-    font-weight: 700;
-    font-size: clamp(1rem, 2.5vw, 1.125rem);
-    letter-spacing: -0.03em;
-    color: var(--text);
-    text-decoration: none;
-  }
-
-  .wordmark:hover,
-  .wordmark:focus-visible {
-    color: var(--accent);
-  }
-
-  .wordmark:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 3px;
-    border-radius: 4px;
-  }
-
-  .contact {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: var(--muted);
-    text-decoration: none;
-  }
-
-  .contact:hover,
-  .contact:focus-visible {
-    color: var(--accent);
-  }
-
-  .contact:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 3px;
-    border-radius: 4px;
   }
 
   .main {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    justify-content: center;
+    gap: clamp(2rem, 5vw, 3rem);
+    padding: 2rem 0;
   }
 
-  .lede {
-    margin: 0;
-    max-width: 42ch;
-    font-size: 1.05rem;
-    color: var(--muted);
+  .heading {
+    margin: 0 auto;
+    max-width: 28ch;
+    text-align: center;
+    font-weight: 600;
+    font-size: clamp(1.75rem, 4.5vw, 2.75rem);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--text);
   }
 
   .nowrap {
@@ -136,32 +75,27 @@ import { apps } from '../data/apps';
   }
 
   .footer {
-    padding-top: 1rem;
-    border-top: 1px solid rgba(15, 23, 42, 0.06);
-  }
-
-  .footer__line {
-    margin: 0;
-    font-size: 0.85rem;
+    margin-top: 2.5rem;
+    font-size: 13px;
     color: var(--muted);
+    text-align: center;
   }
 
-  .footer__privacy {
-    margin: 0.75rem 0 0;
-    padding: 0;
-    list-style: none;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem 1.25rem;
+  .footer a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
   }
 
-  .footer__privacy a {
-    font-size: 0.85rem;
-    color: var(--muted);
+  .footer a:hover,
+  .footer a:focus-visible {
+    color: var(--text);
   }
 
-  .footer__privacy a:hover,
-  .footer__privacy a:focus-visible {
-    color: var(--accent);
+  .footer a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
   }
 </style>
