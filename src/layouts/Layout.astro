@@ -127,10 +127,17 @@ const {
     box-sizing: border-box;
   }
 
+  html {
+    /* Wide blurred orbs must not widen document scroll width */
+    overflow-x: clip;
+  }
+
   body {
     margin: 0;
     position: relative;
     min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: clip;
     color: var(--text);
     background: var(--bg);
     line-height: 1.5;

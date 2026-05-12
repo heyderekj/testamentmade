@@ -61,6 +61,7 @@ import { apps } from '../data/apps';
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    min-height: 100dvh;
   }
 
   .main {
@@ -74,8 +75,8 @@ import { apps } from '../data/apps';
 
   .tm-hero-blobs {
     position: relative;
-    /* Let blurred orbs extend past the hero box — overflow:hidden clipped them */
-    overflow: visible;
+    overflow-x: clip;
+    overflow-y: visible;
   }
 
   .tm-hero-blobs__foreground {
