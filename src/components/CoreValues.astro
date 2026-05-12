@@ -1,155 +1,111 @@
 ---
+import CoreValueHeroicon from './CoreValueHeroicon.astro';
 import { coreValues } from '../data/core-values';
 
 const headingId = 'core-values-heading';
 ---
 
-<section class="core-values" aria-labelledby={headingId}>
-  <h2 class="core-values__heading" id={headingId}>What we stand for</h2>
-  <div class="core-values__grid">
-    {coreValues.map((item, index) => (
-      <article class="core-values__card" style={{ '--stagger': index }}>
-        <div class="core-values__media" aria-hidden="true">
-          <img
-            class="core-values__icon"
-            src={item.iconSrc}
-            alt=""
-            width="64"
-            height="64"
-            loading="lazy"
-            decoding="async"
-          />
-        </div>
-        <h3 class="core-values__title">{item.title}</h3>
-        <p class="core-values__description">{item.description}</p>
-      </article>
-    ))}
+<section class="tm-dinky-core-values" aria-labelledby={headingId}>
+  <h2 class="tm-dinky-core-values__title" id={headingId}>What we stand for</h2>
+  <div class="ss-card">
+    <div class="ss-card-features is-2col">
+      {
+        coreValues.map((item) => (
+          <div class="ss-card-feature">
+            <CoreValueHeroicon name={item.icon} />
+            <h3>{item.title}</h3>
+            <p>{item.description}</p>
+          </div>
+        ))
+      }
+    </div>
   </div>
 </section>
 
 <style>
-  .core-values {
+  /* Mirrors dinkyfiles.com `.ss-card` / `.ss-card-feature` / `.feature-icon` (font stays site default: Plus Jakarta) */
+  .tm-dinky-core-values {
+    --dinky-faq-row-even: oklch(0 0 0 / 0.03);
+    --dinky-divider: oklch(0.937 0 0);
+    --dinky-text: var(--text);
+    --dinky-text-secondary: var(--muted);
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: clamp(1.25rem, 3vw, 1.75rem);
+    max-width: 760px;
+    margin-inline: auto;
     padding-top: clamp(0.5rem, 2vw, 1rem);
   }
 
-  .core-values__heading {
-    margin: 0;
+  @media (prefers-color-scheme: dark) {
+    .tm-dinky-core-values {
+      --dinky-faq-row-even: oklch(1 0 0 / 0.04);
+      --dinky-divider: oklch(0.3414 0.0034 286.22);
+    }
+  }
+
+  .tm-dinky-core-values__title {
+    margin: 0 0 clamp(20px, 3vw, 24px);
     text-align: center;
+    font-size: 22px;
     font-weight: 600;
-    font-size: clamp(1.15rem, 2.5vw, 1.35rem);
+    line-height: 1.15;
     letter-spacing: -0.02em;
-    color: var(--text);
+    color: var(--dinky-text);
   }
 
-  .core-values__grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.25rem;
-    align-items: stretch;
-  }
-
-  @media (min-width: 36rem) {
-    .core-values__grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  @media (min-width: 64rem) {
-    .core-values__grid {
-      grid-template-columns: repeat(4, 1fr);
-    }
-  }
-
-  .core-values__card {
-    --radius: clamp(1.1rem, 2.5vw, 1.5rem);
-    margin: 0;
-    padding: 1.35rem 1.35rem 1.2rem;
-    min-height: 100%;
+  .tm-dinky-core-values .ss-card {
+    background: var(--dinky-faq-row-even);
+    border: 1px solid var(--dinky-divider);
+    border-radius: 12px;
+    padding: 24px;
     display: flex;
     flex-direction: column;
-    gap: 0.65rem;
-    background: var(--card-bg);
-    border-radius: var(--radius);
-    border: 1px solid var(--border-subtle);
-    box-shadow:
-      0 1px 2px var(--card-shadow-1),
-      0 8px 24px var(--card-shadow-2);
-    transform-origin: center;
-    transition:
-      transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
-      box-shadow 0.28s cubic-bezier(0.22, 1, 0.36, 1),
-      border-color 0.28s ease;
-    animation: core-value-in 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
-    animation-delay: calc(var(--stagger) * 60ms);
-  }
-
-  .core-values__media {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
     justify-content: center;
-    min-height: 4.25rem;
+    gap: 18px;
+    align-self: stretch;
   }
 
-  .core-values__icon {
-    width: clamp(3.25rem, 12vw, 4rem);
-    height: auto;
-    aspect-ratio: 1;
-    object-fit: contain;
-    filter: drop-shadow(0 10px 22px var(--icon-drop-shadow));
+  .tm-dinky-core-values .ss-card-features {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
   }
 
-  @media (prefers-reduced-motion: no-preference) {
-    .core-values__card:hover {
-      transform: scale(1.015);
-      box-shadow:
-        0 2px 8px var(--card-shadow-hover-1),
-        0 16px 40px var(--card-shadow-hover-2);
-      border-color: var(--border-strong);
-    }
+  .tm-dinky-core-values .ss-card-features.is-2col {
+    grid-template-columns: 1fr 1fr;
+    gap: 24px 28px;
   }
 
-  .core-values__title {
-    margin: 0;
+  .tm-dinky-core-values .ss-card-feature .feature-icon {
+    width: 20px;
+    height: 20px;
+    margin-bottom: 6px;
+    display: block;
+    color: var(--dinky-text);
+  }
+
+  .tm-dinky-core-values .ss-card-feature h3 {
+    margin: 0 0 4px;
+    font-size: 15px;
     font-weight: 600;
-    font-size: 0.98rem;
-    letter-spacing: -0.02em;
-    line-height: 1.3;
-    color: var(--text);
+    letter-spacing: -0.01em;
+    color: var(--dinky-text);
   }
 
-  .core-values__description {
+  .tm-dinky-core-values .ss-card-feature p {
     margin: 0;
-    font-size: 0.88rem;
-    line-height: 1.45;
-    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--dinky-text-secondary);
   }
 
-  @keyframes core-value-in {
-    from {
-      opacity: 0;
-      transform: translateY(16px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .core-values__card {
-      animation: none;
-      opacity: 1;
-      transform: none;
-      transition: none;
+  @media (max-width: 700px) {
+    .tm-dinky-core-values .ss-card {
+      padding: 24px;
+      gap: 20px;
     }
 
-    .core-values__card:hover {
-      transform: none;
+    .tm-dinky-core-values .ss-card-features.is-2col {
+      grid-template-columns: 1fr;
     }
   }
 </style>
