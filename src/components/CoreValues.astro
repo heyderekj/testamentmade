@@ -7,39 +7,28 @@ const headingId = 'core-values-heading';
 
 <section class="tm-dinky-core-values" aria-labelledby={headingId}>
   <h2 class="tm-dinky-core-values__title" id={headingId}>What we stand for</h2>
-  <div class="ss-card">
-    <div class="ss-card-features is-2col">
-      {
-        coreValues.map((item) => (
-          <div class="ss-card-feature">
-            <CoreValueHeroicon name={item.icon} />
-            <h3>{item.title}</h3>
-            <p>{item.description}</p>
-          </div>
-        ))
-      }
-    </div>
+  <div class="tm-core-values-grid">
+    {
+      coreValues.map((item) => (
+        <div class="tm-core-values__item">
+          <CoreValueHeroicon name={item.icon} />
+          <h3>{item.title}</h3>
+          <p>{item.description}</p>
+        </div>
+      ))
+    }
   </div>
 </section>
 
 <style>
-  /* Mirrors dinkyfiles.com `.ss-card` / `.ss-card-feature` / `.feature-icon` (font stays site default: Plus Jakarta) */
+  /* Feature typography aligned with dinkyfiles.com `.ss-card-feature`; no outer card surface */
   .tm-dinky-core-values {
-    --dinky-faq-row-even: oklch(0 0 0 / 0.03);
-    --dinky-divider: oklch(0.937 0 0);
     --dinky-text: var(--text);
     --dinky-text-secondary: var(--muted);
     width: 100%;
-    max-width: 760px;
+    max-width: var(--max);
     margin-inline: auto;
     padding-top: clamp(0.5rem, 2vw, 1rem);
-  }
-
-  @media (prefers-color-scheme: dark) {
-    .tm-dinky-core-values {
-      --dinky-faq-row-even: oklch(1 0 0 / 0.04);
-      --dinky-divider: oklch(0.3414 0.0034 286.22);
-    }
   }
 
   .tm-dinky-core-values__title {
@@ -52,38 +41,36 @@ const headingId = 'core-values-heading';
     color: var(--dinky-text);
   }
 
-  .tm-dinky-core-values .ss-card {
-    background: var(--dinky-faq-row-even);
-    border: 1px solid var(--dinky-divider);
-    border-radius: 12px;
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 18px;
-    align-self: stretch;
-  }
-
-  .tm-dinky-core-values .ss-card-features {
+  .tm-dinky-core-values .tm-core-values-grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 18px;
   }
 
-  .tm-dinky-core-values .ss-card-features.is-2col {
-    grid-template-columns: 1fr 1fr;
-    gap: 24px 28px;
+  @media (min-width: 520px) {
+    .tm-dinky-core-values .tm-core-values-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px 28px;
+    }
   }
 
-  .tm-dinky-core-values .ss-card-feature .feature-icon {
+  @media (min-width: 960px) {
+    .tm-dinky-core-values .tm-core-values-grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px 28px;
+    }
+  }
+
+  .tm-dinky-core-values .tm-core-values__item :global(svg.feature-icon) {
     width: 20px;
     height: 20px;
     margin-bottom: 6px;
     display: block;
     color: var(--dinky-text);
+    flex-shrink: 0;
   }
 
-  .tm-dinky-core-values .ss-card-feature h3 {
+  .tm-dinky-core-values .tm-core-values__item h3 {
     margin: 0 0 4px;
     font-size: 15px;
     font-weight: 600;
@@ -91,21 +78,10 @@ const headingId = 'core-values-heading';
     color: var(--dinky-text);
   }
 
-  .tm-dinky-core-values .ss-card-feature p {
+  .tm-dinky-core-values .tm-core-values__item p {
     margin: 0;
     font-size: 13px;
     line-height: 1.5;
     color: var(--dinky-text-secondary);
-  }
-
-  @media (max-width: 700px) {
-    .tm-dinky-core-values .ss-card {
-      padding: 24px;
-      gap: 20px;
-    }
-
-    .tm-dinky-core-values .ss-card-features.is-2col {
-      grid-template-columns: 1fr;
-    }
   }
 </style>

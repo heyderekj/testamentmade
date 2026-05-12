@@ -12,23 +12,32 @@ import { apps } from '../data/apps';
 >
   <div class="page">
     <main class="main">
-      <h1 class="heading">
-        Apps for studying Scripture, shrinking files, and sorting downloads — made by{' '}
-        <span class="author-hit" tabindex="0" role="group" aria-label="Testament Made LLC — Derek Castelli">
-          Testament Made LLC.
-          <a
-            class="about-chip"
-            href="https://heyderekj.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            About Derek Castelli<span class="about-chip__arrow" aria-hidden="true">→</span>
-          </a>
-        </span>
-      </h1>
+      <div class="tm-hero-blobs">
+        <div id="tm-bg" class="tm-bg" aria-hidden="true">
+          <span class="tm-bg__blob tm-bg__blob--pink"></span>
+          <span class="tm-bg__blob tm-bg__blob--indigo"></span>
+          <span class="tm-bg__blob tm-bg__blob--blue"></span>
+        </div>
+        <div class="tm-hero-blobs__foreground">
+          <h1 class="heading">
+            Apps for studying Scripture, shrinking files, and sorting downloads — made by{' '}
+            <span class="author-hit" tabindex="0" role="group" aria-label="Testament Made LLC — Derek Castelli">
+              Testament Made LLC.
+              <a
+                class="about-chip"
+                href="https://heyderekj.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                About Derek Castelli<span class="about-chip__arrow" aria-hidden="true">→</span>
+              </a>
+            </span>
+          </h1>
 
-      <div class="grid">
-        {apps.map((app, index) => <AppCard {...app} index={index} />)}
+          <div class="grid">
+            {apps.map((app, index) => <AppCard {...app} index={index} />)}
+          </div>
+        </div>
       </div>
 
       <CoreValues />
@@ -63,6 +72,19 @@ import { apps } from '../data/apps';
     padding: clamp(2.75rem, 10vh, 5rem) 0 2rem;
   }
 
+  .tm-hero-blobs {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tm-hero-blobs__foreground {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2rem, 5vw, 3rem);
+  }
+
   .heading {
     margin: 0 auto;
     max-width: 28ch;
@@ -83,19 +105,19 @@ import { apps } from '../data/apps';
     position: relative;
     display: inline-block;
     max-width: 100%;
-    text-decoration-line: underline;
-    text-decoration-style: dashed;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 0.12em;
     cursor: default;
     outline: none;
+    /* Hover slop: chip sits in this band so the pointer can reach the link without leaving the group */
+    padding-bottom: 2.35rem;
+    margin-bottom: -2.35rem;
   }
 
   .about-chip {
     box-sizing: border-box;
     position: absolute;
     left: 50%;
-    top: calc(100% + 0.5rem);
+    top: auto;
+    bottom: 0.35rem;
     z-index: 30;
     display: inline-flex;
     align-items: center;
@@ -163,8 +185,9 @@ import { apps } from '../data/apps';
   /* Touch / no-hover: keep link usable without hovering */
   @media (hover: none) {
     .author-hit {
-      text-decoration-style: solid;
       display: inline;
+      padding-bottom: 0;
+      margin-bottom: 0;
     }
 
     .about-chip {

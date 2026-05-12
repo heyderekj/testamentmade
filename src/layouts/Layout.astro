@@ -34,11 +34,6 @@ const {
     <title>{title}</title>
   </head>
   <body>
-    <div id="tm-bg" class="tm-bg" aria-hidden="true">
-      <span class="tm-bg__blob tm-bg__blob--pink"></span>
-      <span class="tm-bg__blob tm-bg__blob--indigo"></span>
-      <span class="tm-bg__blob tm-bg__blob--blue"></span>
-    </div>
     <slot />
   </body>
 </html>
@@ -142,7 +137,7 @@ const {
   }
 
   .tm-bg {
-    position: fixed;
+    position: absolute;
     inset: 0;
     z-index: 0;
     pointer-events: none;
@@ -161,62 +156,84 @@ const {
     transition: opacity 0.45s ease;
   }
 
-  @keyframes tm-float-pink {
+  @keyframes tm-drift-aurora {
     0%,
     100% {
-      transform: translate3d(-1.8vmin, 0.8vmin, 0) rotate(0.02deg);
+      transform: translate3d(-6vmin, 2vmin, 0) rotate(-1.8deg);
     }
-    33% {
-      transform: translate3d(3.2vmin, -2vmin, 0) rotate(-0.02deg);
+    22% {
+      transform: translate3d(10vmin, -5vmin, 0) rotate(1.2deg);
+    }
+    44% {
+      transform: translate3d(5vmin, 11vmin, 0) rotate(2.3deg);
     }
     66% {
-      transform: translate3d(-1vmin, 2.8vmin, 0) rotate(0.02deg);
+      transform: translate3d(-11vmin, -4vmin, 0) rotate(-1deg);
+    }
+    85% {
+      transform: translate3d(7vmin, 6vmin, 0) rotate(0.6deg);
     }
   }
 
-  @keyframes tm-float-indigo {
+  @keyframes tm-drift-nebula {
     0%,
     100% {
-      transform: translate3d(2vmin, 1vmin, 0);
+      transform: translate3d(4vmin, -3vmin, 0) rotate(1.1deg);
     }
-    40% {
-      transform: translate3d(-2.8vmin, -1.4vmin, 0);
+    18% {
+      transform: translate3d(-9vmin, 6vmin, 0) rotate(-2.4deg);
     }
-    70% {
-      transform: translate3d(1.2vmin, 2.6vmin, 0);
+    38% {
+      transform: translate3d(8vmin, 9vmin, 0) rotate(0.4deg);
+    }
+    58% {
+      transform: translate3d(-5vmin, -8vmin, 0) rotate(2deg);
+    }
+    78% {
+      transform: translate3d(11vmin, 2vmin, 0) rotate(-1.2deg);
     }
   }
 
-  @keyframes tm-float-blue {
+  @keyframes tm-drift-tide {
     0%,
     100% {
-      transform: translate3d(1.6vmin, -2.2vmin, 0);
+      transform: translate3d(3vmin, 5vmin, 0) rotate(0deg);
     }
-    50% {
-      transform: translate3d(-3vmin, 1.8vmin, 0);
+    14% {
+      transform: translate3d(-12vmin, -4vmin, 0) rotate(-2.5deg);
     }
-    82% {
-      transform: translate3d(2.4vmin, 3vmin, 0);
+    35% {
+      transform: translate3d(9vmin, -7vmin, 0) rotate(1.5deg);
+    }
+    56% {
+      transform: translate3d(-4vmin, 12vmin, 0) rotate(-0.8deg);
+    }
+    76% {
+      transform: translate3d(10vmin, 4vmin, 0) rotate(2.2deg);
+    }
+    92% {
+      transform: translate3d(-8vmin, -6vmin, 0) rotate(-1.4deg);
     }
   }
 
   @media (prefers-reduced-motion: no-preference) {
     .tm-bg__blob--pink {
-      animation: tm-float-pink 22s ease-in-out infinite;
+      animation: tm-drift-aurora 21s cubic-bezier(0.45, 0.03, 0.55, 0.97) -4s infinite;
     }
 
     .tm-bg__blob--indigo {
-      animation: tm-float-indigo 26s ease-in-out -4s infinite;
+      animation: tm-drift-nebula 29s cubic-bezier(0.37, 0, 0.63, 1) -9s infinite;
     }
 
     .tm-bg__blob--blue {
-      animation: tm-float-blue 20s ease-in-out -8s infinite;
+      animation: tm-drift-tide 18s cubic-bezier(0.32, 0.11, 0.67, 0.89) -2s infinite;
     }
   }
 
   .tm-bg__blob--pink {
-    left: -15%;
-    top: -5%;
+    right: -12%;
+    top: 5%;
+    left: auto;
     background: radial-gradient(
       circle closest-side at 50% 50%,
       var(--blob-pink),
@@ -235,9 +252,9 @@ const {
   }
 
   .tm-bg__blob--blue {
-    right: -12%;
-    top: 5%;
-    left: auto;
+    left: -15%;
+    top: -5%;
+    right: auto;
     background: radial-gradient(
       circle closest-side at 50% 50%,
       var(--blob-blue),
