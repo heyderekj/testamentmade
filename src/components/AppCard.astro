@@ -49,8 +49,10 @@ const tagLine = tags.join(' · ');
     color: inherit;
     background: var(--card-bg);
     border-radius: var(--radius);
-    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06);
-    border: 1px solid rgba(15, 23, 42, 0.05);
+    box-shadow:
+      0 1px 2px var(--card-shadow-1),
+      0 8px 24px var(--card-shadow-2);
+    border: 1px solid var(--border-subtle);
     transform-origin: center;
     transition:
       transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
@@ -63,8 +65,10 @@ const tagLine = tags.join(' · ');
   .app-card:hover,
   .app-card:focus-visible {
     transform: scale(1.02);
-    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06), 0 16px 40px rgba(15, 23, 42, 0.1);
-    border-color: rgba(15, 23, 42, 0.09);
+    box-shadow:
+      0 2px 8px var(--card-shadow-hover-1),
+      0 16px 40px var(--card-shadow-hover-2);
+    border-color: var(--border-strong);
   }
 
   .app-card:focus-visible {
@@ -86,7 +90,7 @@ const tagLine = tags.join(' · ');
     aspect-ratio: 1;
     object-fit: contain;
     border-radius: 22%;
-    filter: drop-shadow(0 12px 28px rgba(15, 23, 42, 0.12));
+    filter: drop-shadow(0 12px 28px var(--icon-drop-shadow));
   }
 
   .app-card__footer {
@@ -128,7 +132,7 @@ const tagLine = tags.join(' · ');
     outline: 2px dashed var(--accent);
     outline-offset: 4px;
     border-radius: inherit;
-    background: rgba(37, 99, 235, 0.04);
+    background: color-mix(in oklch, var(--accent) 14%, var(--card-bg));
   }
 
   @keyframes card-in {

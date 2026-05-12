@@ -1,10 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
   <defs>
+    <style type="text/css">
+      @media (prefers-color-scheme: dark) {
+        #tm-favicon-bg {
+          filter: saturate(1.06) brightness(0.84);
+          opacity: 0.94;
+        }
+      }
+    </style>
     <linearGradient id="tm" x1="2" y1="30" x2="30" y2="2" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#f41d68" />
-      <stop offset="0.48" stop-color="#4338e8" />
-      <stop offset="1" stop-color="#0095ff" />
+      <stop stop-color="oklch(0.591 0.242 356)" />
+      <stop offset="0.48" stop-color="oklch(0.485 0.208 279)" />
+      <stop offset="1" stop-color="oklch(0.662 0.172 246)" />
     </linearGradient>
   </defs>
-  <rect width="32" height="32" rx="8" fill="url(#tm)" />
+  <rect id="tm-favicon-bg" width="32" height="32" rx="8" fill="url(#tm)" />
 </svg>

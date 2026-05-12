@@ -19,7 +19,8 @@ const {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#fafafa" />
+    <meta name="theme-color" content="#f7f9fc" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d111c" media="(prefers-color-scheme: dark)" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     {preloadImages.map((href) => (
       <link rel="preload" href={href} as="image" />
@@ -33,7 +34,7 @@ const {
     <title>{title}</title>
   </head>
   <body>
-    <div class="tm-bg" aria-hidden="true">
+    <div id="tm-bg" class="tm-bg" aria-hidden="true">
       <span class="tm-bg__blob tm-bg__blob--pink"></span>
       <span class="tm-bg__blob tm-bg__blob--indigo"></span>
       <span class="tm-bg__blob tm-bg__blob--blue"></span>
@@ -43,13 +44,42 @@ const {
 </html>
 
 <style is:global>
+  /* OKLCH tokens — perceptually even neutrals & brand blobs (same hue ladder ~264–279) */
   :root {
-    --bg: #fafafa;
-    --text: #1a1a1a;
-    --muted: #737373;
-    --card-bg: #f5f5f5;
-    --accent: #2563eb;
+    color-scheme: light dark;
+
+    --bg: oklch(0.986 0.003 264);
+    --text: oklch(0.216 0.012 264);
+    --muted: oklch(0.545 0.018 267);
+    --card-bg: oklch(0.962 0.005 263);
+    --accent: oklch(0.528 0.196 267);
     --max: 72rem;
+
+    /* Surfaces / chrome */
+    --surface-elevated: oklch(0.999 0.002 264);
+    --border-subtle: oklch(0.265 0.042 265 / 0.1);
+    --border-strong: oklch(0.265 0.042 265 / 0.15);
+    --shadow-soft: oklch(0.265 0.042 265 / 0.08);
+    --shadow-deep: oklch(0.265 0.042 265 / 0.15);
+    --footer-border: oklch(0.265 0.042 265 / 0.07);
+
+    --card-shadow-1: oklch(0.265 0.042 265 / 0.05);
+    --card-shadow-2: oklch(0.265 0.042 265 / 0.085);
+    --card-shadow-hover-1: oklch(0.265 0.042 265 / 0.1);
+    --card-shadow-hover-2: oklch(0.265 0.042 265 / 0.14);
+
+    --icon-drop-shadow: oklch(0.265 0.042 265 / 0.16);
+
+    --focus-ring-gap: oklch(0.986 0.003 264);
+
+    /* Ambient blobs — brand chroma, alpha in gradient color */
+    --blob-pink: oklch(0.591 0.242 356 / 0.9);
+    --blob-indigo: oklch(0.485 0.208 279 / 0.87);
+    --blob-blue: oklch(0.662 0.172 246 / 0.88);
+
+    --blob-accent-opacity: 0.52;
+    --blob-idle-opacity: 0.28;
+
     font-family:
       'Plus Jakarta Sans',
       system-ui,
@@ -60,6 +90,40 @@ const {
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: oklch(0.175 0.03 267);
+      --text: oklch(0.965 0.007 274);
+      --muted: oklch(0.705 0.02 274);
+      --card-bg: oklch(0.23 0.035 267);
+      --accent: oklch(0.715 0.148 259);
+
+      --surface-elevated: oklch(0.275 0.036 267);
+      --border-subtle: oklch(1 0.006 274 / 0.1);
+      --border-strong: oklch(1 0.006 274 / 0.14);
+      --shadow-soft: oklch(0 0 0 / 0.42);
+      --shadow-deep: oklch(0 0 0 / 0.58);
+      --footer-border: oklch(1 0.006 274 / 0.09);
+
+      --card-shadow-1: oklch(0 0 0 / 0.52);
+      --card-shadow-2: oklch(0 0 0 / 0.42);
+      --card-shadow-hover-1: oklch(0 0 0 / 0.6);
+      --card-shadow-hover-2: oklch(0 0 0 / 0.38);
+
+      --icon-drop-shadow: oklch(0 0 0 / 0.56);
+
+      --focus-ring-gap: oklch(0.175 0.03 267);
+
+      /* Softer blobs on dark canvas */
+      --blob-pink: oklch(0.695 0.13 356 / 0.44);
+      --blob-indigo: oklch(0.628 0.14 279 / 0.4);
+      --blob-blue: oklch(0.695 0.12 246 / 0.42);
+
+      --blob-accent-opacity: 0.7;
+      --blob-idle-opacity: 0.2;
+    }
   }
 
   *,
@@ -75,9 +139,6 @@ const {
     color: var(--text);
     background: var(--bg);
     line-height: 1.5;
-    /* Cursor parallax blobs (normalized 0–1, set by JS) */
-    --cursor-x-norm: 0.5;
-    --cursor-y-norm: 0.5;
   }
 
   .tm-bg {
@@ -95,29 +156,71 @@ const {
     height: min(120vmin, 58rem);
     border-radius: 50%;
     filter: blur(60px);
-    opacity: 0.32;
     will-change: transform;
-    transition: transform 120ms linear;
+    opacity: var(--blob-idle-opacity);
+    transition: opacity 0.45s ease;
   }
 
-  @media (prefers-reduced-motion: reduce), (pointer: coarse) {
-    .tm-bg__blob {
-      transition: none;
+  @keyframes tm-float-pink {
+    0%,
+    100% {
+      transform: translate3d(-1.8vmin, 0.8vmin, 0) rotate(0.02deg);
+    }
+    33% {
+      transform: translate3d(3.2vmin, -2vmin, 0) rotate(-0.02deg);
+    }
+    66% {
+      transform: translate3d(-1vmin, 2.8vmin, 0) rotate(0.02deg);
     }
   }
 
-  /* Parallax drift toward cursor (multipliers differentiate layers) */
+  @keyframes tm-float-indigo {
+    0%,
+    100% {
+      transform: translate3d(2vmin, 1vmin, 0);
+    }
+    40% {
+      transform: translate3d(-2.8vmin, -1.4vmin, 0);
+    }
+    70% {
+      transform: translate3d(1.2vmin, 2.6vmin, 0);
+    }
+  }
+
+  @keyframes tm-float-blue {
+    0%,
+    100% {
+      transform: translate3d(1.6vmin, -2.2vmin, 0);
+    }
+    50% {
+      transform: translate3d(-3vmin, 1.8vmin, 0);
+    }
+    82% {
+      transform: translate3d(2.4vmin, 3vmin, 0);
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .tm-bg__blob--pink {
+      animation: tm-float-pink 22s ease-in-out infinite;
+    }
+
+    .tm-bg__blob--indigo {
+      animation: tm-float-indigo 26s ease-in-out -4s infinite;
+    }
+
+    .tm-bg__blob--blue {
+      animation: tm-float-blue 20s ease-in-out -8s infinite;
+    }
+  }
+
   .tm-bg__blob--pink {
     left: -15%;
     top: -5%;
     background: radial-gradient(
       circle closest-side at 50% 50%,
-      rgba(244, 29, 104, 0.95),
+      var(--blob-pink),
       transparent 72%
-    );
-    transform: translate(
-      calc((var(--cursor-x-norm) - 0.5) * 28vmin),
-      calc((var(--cursor-y-norm) - 0.5) * 28vmin)
     );
   }
 
@@ -126,12 +229,8 @@ const {
     top: 40%;
     background: radial-gradient(
       circle closest-side at 50% 50%,
-      rgba(67, 56, 232, 0.9),
+      var(--blob-indigo),
       transparent 70%
-    );
-    transform: translate(
-      calc((var(--cursor-x-norm) - 0.5) * -18vmin),
-      calc((var(--cursor-y-norm) - 0.5) * 16vmin)
     );
   }
 
@@ -141,33 +240,66 @@ const {
     left: auto;
     background: radial-gradient(
       circle closest-side at 50% 50%,
-      rgba(0, 149, 255, 0.92),
+      var(--blob-blue),
       transparent 68%
     );
-    transform: translate(
-      calc((var(--cursor-x-norm) - 0.5) * 22vmin),
-      calc((var(--cursor-y-norm) - 0.5) * -20vmin)
-    );
+  }
+
+  /* Hover an app card: only that orb reads at full warmth */
+  .tm-bg[data-accent='binky'] .tm-bg__blob--pink {
+    opacity: var(--blob-accent-opacity);
+    z-index: 1;
+  }
+
+  .tm-bg[data-accent='dinky'] .tm-bg__blob--indigo {
+    opacity: var(--blob-accent-opacity);
+    z-index: 1;
+  }
+
+  .tm-bg[data-accent='harvous'] .tm-bg__blob--blue {
+    opacity: var(--blob-accent-opacity);
+    z-index: 1;
+  }
+
+  .tm-bg[data-accent='binky'] .tm-bg__blob--indigo,
+  .tm-bg[data-accent='binky'] .tm-bg__blob--blue {
+    opacity: 0;
+    animation: none;
+  }
+
+  .tm-bg[data-accent='dinky'] .tm-bg__blob--pink,
+  .tm-bg[data-accent='dinky'] .tm-bg__blob--blue {
+    opacity: 0;
+    animation: none;
+  }
+
+  .tm-bg[data-accent='harvous'] .tm-bg__blob--pink,
+  .tm-bg[data-accent='harvous'] .tm-bg__blob--indigo {
+    opacity: 0;
+    animation: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tm-bg__blob {
+      animation: none !important;
+    }
   }
 
   .tm-toast {
     box-sizing: border-box;
-    position: fixed;
-    left: 50%;
-    bottom: max(1.25rem, env(safe-area-inset-bottom));
-    z-index: 50;
+    width: fit-content;
     max-width: min(22rem, calc(100vw - 2rem));
-    transform: translateX(-50%) translateY(8px);
+    transform: translateY(6px);
     padding: 0.85rem 1.1rem;
     font-size: 0.9rem;
     font-weight: 500;
     color: var(--text);
-    background: #fff;
-    border: 1px solid rgba(15, 23, 42, 0.09);
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
     border-radius: 0.875rem;
     box-shadow:
-      0 2px 8px rgba(15, 23, 42, 0.08),
-      0 12px 32px rgba(15, 23, 42, 0.12);
+      0 2px 8px var(--shadow-soft),
+      0 12px 32px var(--shadow-deep);
     cursor: pointer;
     text-decoration: none;
     text-align: center;
@@ -180,55 +312,7 @@ const {
 
   .tm-toast.is-visible {
     opacity: 1;
-    transform: translateX(-50%) translateY(0);
-    pointer-events: auto;
-  }
-
-  .tm-quote-chip {
-    box-sizing: border-box;
-    position: fixed;
-    z-index: 40;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-    padding: 0.35rem 0.65rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--text);
-    text-decoration: none;
-    background: #fff;
-    border: 1px solid rgba(15, 23, 42, 0.08);
-    border-radius: 999px;
-    box-shadow:
-      0 1px 3px rgba(15, 23, 42, 0.06),
-      0 6px 20px rgba(15, 23, 42, 0.1);
-    white-space: nowrap;
-    visibility: hidden;
-    opacity: 0;
-    transform: translateY(6px);
-    transition:
-      opacity 0.2s ease,
-      transform 0.2s ease,
-      visibility 0s linear 0.2s;
-  }
-
-  .tm-quote-chip:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
-
-  .tm-quote-chip.is-visible {
-    visibility: visible;
-    opacity: 1;
     transform: translateY(0);
-    transition:
-      opacity 0.2s ease,
-      transform 0.2s ease,
-      visibility 0s linear 0s;
-  }
-
-  .tm-quote-chip-arrow {
-    font-size: 0.85rem;
-    line-height: 1;
+    pointer-events: auto;
   }
 </style>

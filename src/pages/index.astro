@@ -13,20 +13,24 @@ import { apps } from '../data/apps';
     <main class="main">
       <h1 class="heading">
         Apps for studying Scripture, shrinking files, and sorting downloads — made by{' '}
-        <span class="author-swap">
-          <span class="author-swap__legal">Testament Made LLC.</span>
+        <span class="author-hit" tabindex="0" role="group" aria-label="Testament Made LLC — Derek Castelli">
+          Testament Made LLC.
           <a
-            class="author-swap__link"
+            class="about-chip"
             href="https://heyderekj.com/"
             target="_blank"
             rel="noopener noreferrer"
-            >which is just Derek Castelli.</a>
+          >
+            About Derek Castelli<span class="about-chip__arrow" aria-hidden="true">→</span>
+          </a>
         </span>
       </h1>
 
       <div class="grid">
         {apps.map((app, index) => <AppCard {...app} index={index} />)}
       </div>
+
+      <div class="toast-slot" id="toast-slot" aria-live="polite" />
     </main>
 
     <footer class="footer">
@@ -71,66 +75,141 @@ import { apps } from '../data/apps';
     white-space: nowrap;
   }
 
-  /* Hover / focus: “Testament Made LLC.” ↔ linked byline */
-  .author-swap {
-    display: inline-grid;
-    vertical-align: baseline;
-    justify-items: center;
-    text-align: center;
-  }
-
-  .author-swap > * {
-    grid-area: 1 / 1;
-    transition:
-      opacity 0.2s ease,
-      visibility 0.2s ease;
-  }
-
-  .author-swap__legal {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  .author-swap__link {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    font-weight: inherit;
-    font-size: inherit;
-    letter-spacing: inherit;
-    line-height: inherit;
-    color: inherit;
-    text-decoration: underline;
+  /* Hover / focus-within → “About Derek Castelli” chip (pill, like quote affordance) */
+  .author-hit {
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+    text-decoration-line: underline;
+    text-decoration-style: dashed;
     text-decoration-thickness: 1px;
     text-underline-offset: 0.12em;
+    cursor: default;
+    outline: none;
   }
 
-  .author-swap:hover .author-swap__legal,
-  .author-swap:focus-within .author-swap__legal {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-  }
-
-  .author-swap:hover .author-swap__link,
-  .author-swap:focus-within .author-swap__link {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-  }
-
-  .author-swap__link:hover,
-  .author-swap__link:focus-visible {
+  .about-chip {
+    box-sizing: border-box;
+    position: absolute;
+    left: 50%;
+    top: calc(100% + 0.5rem);
+    z-index: 30;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.4rem 0.72rem;
+    font-size: 0.74rem;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
     color: var(--text);
+    text-decoration: none;
+    white-space: nowrap;
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 999px;
+    box-shadow:
+      0 2px 6px var(--shadow-soft),
+      0 10px 28px var(--shadow-deep);
+    transform: translateX(-50%) translateY(6px);
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease,
+      visibility 0s linear 0.2s;
   }
 
-  .author-swap__link:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 3px;
-    border-radius: 4px;
+  .about-chip:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 2px var(--focus-ring-gap),
+      0 0 0 4px var(--accent),
+      0 10px 28px var(--shadow-deep);
+  }
+
+  .about-chip:hover {
+    border-color: var(--border-strong);
+  }
+
+  .about-chip__arrow {
+    font-size: 0.92em;
+    line-height: 1;
+  }
+
+  .author-hit:hover .about-chip,
+  .author-hit:focus-within .about-chip {
+    visibility: visible;
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease,
+      visibility 0s linear 0s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .about-chip {
+      transition-duration: 0.01ms;
+      transition-delay: 0ms !important;
+    }
+  }
+
+  /* Touch / no-hover: keep link usable without hovering */
+  @media (hover: none) {
+    .author-hit {
+      text-decoration-style: solid;
+      display: inline;
+    }
+
+    .about-chip {
+      position: relative;
+      left: auto;
+      top: auto;
+      transform: none;
+      margin-left: 0.45em;
+      white-space: normal;
+      max-width: 12rem;
+      text-align: left;
+      vertical-align: baseline;
+      font-size: 0.7rem;
+      visibility: visible;
+      opacity: 1;
+      pointer-events: auto;
+      display: inline-flex;
+    }
+
+    .about-chip:not(:focus-visible):not(:hover) {
+      box-shadow:
+        0 1px 3px var(--shadow-soft),
+        0 6px 18px var(--shadow-deep);
+    }
   }
 
   /* Bento: 3 equal columns on wide screens; single column on narrow */
+  .toast-slot {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 0;
+  }
+
+  .toast-slot:not(:empty) {
+    padding-top: clamp(0.75rem, 3vw, 1.25rem);
+  }
+
+  .toast-slot > :global(.tm-toast) {
+    flex-shrink: 0;
+    position: relative;
+    left: auto;
+    bottom: auto;
+    z-index: 20;
+    margin: 0;
+  }
+
   .grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -183,6 +262,8 @@ import { apps } from '../data/apps';
 
   .footer {
     margin-top: 2.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--footer-border);
     font-size: 13px;
     color: var(--muted);
     text-align: center;
@@ -210,40 +291,58 @@ import { apps } from '../data/apps';
 <script is:inline>
   (function tmHoldingEggs() {
     var mqReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
-    var mqCoarse = window.matchMedia('(pointer: coarse)');
+    var dinky = document.querySelector('[data-app="dinky"]');
+    var grid = document.querySelector('.grid');
+    var toastSlot = document.getElementById('toast-slot');
+    var tmBg = document.getElementById('tm-bg');
+    var page = document.querySelector('.page');
 
-    /** #13 Cursor parallax blobs (skip coarse pointer / reduced motion) */
-    var rafId = 0;
-    var targetX = 0.5;
-    var targetY = 0.5;
-    if (!mqReduce.matches && !mqCoarse.matches) {
-      window.addEventListener(
-        'pointermove',
-        function (e) {
-          targetX = e.clientX / window.innerWidth;
-          targetY = e.clientY / window.innerHeight;
-          if (rafId) return;
-          rafId = window.requestAnimationFrame(function () {
-            rafId = 0;
-            document.body.style.setProperty('--cursor-x-norm', String(targetX));
-            document.body.style.setProperty('--cursor-y-norm', String(targetY));
-          });
-        },
-        { passive: true },
-      );
+    function setBgAccent(slug) {
+      if (!tmBg) return;
+      if (!slug) {
+        tmBg.removeAttribute('data-accent');
+        return;
+      }
+      tmBg.setAttribute('data-accent', slug);
     }
 
-    var dinky = document.querySelector('[data-app="dinky"]');
+    if (grid && tmBg) {
+      grid.addEventListener('pointerover', function (e) {
+        var card = e.target.closest && e.target.closest('.app-card');
+        if (!card || !grid.contains(card)) return;
+        setBgAccent(card.getAttribute('data-app'));
+      });
+      grid.addEventListener('pointerout', function (e) {
+        var rel = e.relatedTarget;
+        if (rel && grid.contains(rel)) return;
+        setBgAccent(null);
+      });
+      grid.addEventListener('focusin', function (e) {
+        var card = e.target.closest && e.target.closest('.app-card');
+        if (!card || !grid.contains(card)) return;
+        setBgAccent(card.getAttribute('data-app'));
+      });
+      grid.addEventListener('focusout', function (e) {
+        var rel = e.relatedTarget;
+        if (rel && grid.contains(rel)) return;
+        setBgAccent(null);
+      });
+    }
 
-    /** #7 Drop files on Dinky → toast linking to site */
     var toastHideTimer = null;
+
     function fadeOutRemoveToast(el) {
       if (!el || !el.parentNode) return;
+      if (toastHideTimer !== null) {
+        window.clearTimeout(toastHideTimer);
+        toastHideTimer = null;
+      }
       el.classList.remove('is-visible');
       window.setTimeout(function () {
         if (el.parentNode) el.remove();
       }, 380);
     }
+
     function dismissToastImmediately(el) {
       if (toastHideTimer !== null) {
         window.clearTimeout(toastHideTimer);
@@ -252,25 +351,28 @@ import { apps } from '../data/apps';
       if (el && el.parentNode) el.remove();
     }
 
-    function showDinkyToast(fileCount) {
-      var old = document.querySelector('.tm-toast');
-      if (old) dismissToastImmediately(old);
+    function dismissSelectionToastOnly() {
+      if (!toastSlot) return;
+      var t = toastSlot.querySelector('.tm-toast[data-toast-src="selection"]');
+      if (t) dismissToastImmediately(t);
+    }
 
-      var plural = fileCount !== 1;
-      var msg = plural
-        ? 'Want to actually shrink those? Try Dinky — dinkyfiles.com'
-        : 'Want to actually shrink that? Try Dinky — dinkyfiles.com';
+    function showToast(spec) {
+      if (!toastSlot) return;
+      var prev = toastSlot.querySelector('.tm-toast');
+      if (prev) dismissToastImmediately(prev);
 
       var a = document.createElement('a');
       a.className = 'tm-toast';
-      a.href = 'https://dinkyfiles.com/';
+      a.href = spec.href;
       a.target = '_blank';
       a.rel = 'noopener noreferrer';
+      a.textContent = spec.message;
       a.setAttribute('role', 'status');
       a.setAttribute('aria-live', 'polite');
-      a.textContent = msg;
-      document.body.appendChild(a);
+      if (spec.source) a.setAttribute('data-toast-src', spec.source);
 
+      toastSlot.appendChild(a);
       window.requestAnimationFrame(function () {
         a.classList.add('is-visible');
       });
@@ -278,7 +380,7 @@ import { apps } from '../data/apps';
       toastHideTimer = window.setTimeout(function () {
         toastHideTimer = null;
         fadeOutRemoveToast(a);
-      }, 4500);
+      }, spec.durationMs != null ? spec.durationMs : 4500);
 
       a.addEventListener('click', function () {
         if (toastHideTimer !== null) {
@@ -296,7 +398,7 @@ import { apps } from '../data/apps';
       return false;
     }
 
-    if (dinky) {
+    if (dinky && toastSlot) {
       document.addEventListener(
         'dragover',
         function (e) {
@@ -317,15 +419,22 @@ import { apps } from '../data/apps';
       document.addEventListener('drop', function (e) {
         dinky.classList.remove('is-drop-target');
         if (!hasFilePayload(e.dataTransfer)) return;
-        if (!dinky || !e.target || !dinky.contains(e.target)) return;
+        if (!e.target || !dinky.contains(e.target)) return;
         e.preventDefault();
         var n = e.dataTransfer.files ? e.dataTransfer.files.length : 0;
-        if (n > 0) showDinkyToast(n);
+        if (n <= 0) return;
+        showToast({
+          message:
+            n === 1
+              ? 'Want to actually shrink that? Try Dinky — dinkyfiles.com'
+              : 'Want to actually shrink those? Try Dinky — dinkyfiles.com',
+          href: 'https://dinkyfiles.com/',
+          source: 'drop',
+          durationMs: 4500,
+        });
       });
     }
 
-    /** #8 Binky hover → tidy/messy grid */
-    var grid = document.querySelector('.grid');
     var binky = document.querySelector('[data-app="binky"]');
     var messyTimer = 0;
     if (grid && binky && !mqReduce.matches) {
@@ -340,22 +449,8 @@ import { apps } from '../data/apps';
       });
     }
 
-    /** #9 Selection → Harvous chip */
-    var chip = document.createElement('a');
-    chip.href = 'https://harvous.com/';
-    chip.target = '_blank';
-    chip.rel = 'noopener noreferrer';
-    chip.className = 'tm-quote-chip';
-    chip.setAttribute(
-      'aria-label',
-      'Open Harvous — save passages and highlights as notes.',
-    );
-    chip.innerHTML =
-      'Save this to Harvous <span class="tm-quote-chip-arrow" aria-hidden="true">→</span>';
-    document.body.appendChild(chip);
-
-    var page = document.querySelector('.page');
     var selRaf = 0;
+    var lastSelectionText = '';
 
     function selInPage(sel) {
       if (!sel || sel.rangeCount === 0 || !page) return false;
@@ -364,56 +459,45 @@ import { apps } from '../data/apps';
       return page.contains(node);
     }
 
-    function placeChip(sel) {
-      try {
-        var range = sel.getRangeAt(0);
-        var rects = range.getClientRects();
-        if (!rects || rects.length === 0) return false;
-        var last = rects[rects.length - 1];
-        var margin = 6;
-        var x = Math.round(last.left + margin);
-        var y = Math.round(last.bottom + margin);
-        var approxW = 220;
-        var approxH = 40;
-        x = Math.max(8, Math.min(x, window.innerWidth - approxW - 8));
-        y = Math.max(8, Math.min(y, window.innerHeight - approxH - 8));
-        chip.style.left = x + 'px';
-        chip.style.top = y + 'px';
-        return true;
-      } catch (e2) {
-        return false;
-      }
-    }
-
-    function updateChip() {
+    function updateSelectionToast() {
+      if (!toastSlot || !page) return;
       var sel = window.getSelection();
       var txt = sel ? sel.toString().trim() : '';
-      if (!txt || !selInPage(sel)) {
-        chip.classList.remove('is-visible');
+      if (!txt || !sel || !selInPage(sel)) {
+        lastSelectionText = '';
+        dismissSelectionToastOnly();
         return;
       }
-      if (!placeChip(sel)) {
-        chip.classList.remove('is-visible');
-        return;
-      }
-      chip.classList.add('is-visible');
+      if (txt === lastSelectionText) return;
+      lastSelectionText = txt;
+
+      showToast({
+        message: 'Save this in Harvous — harvous.com',
+        href: 'https://harvous.com/',
+        source: 'selection',
+        durationMs: 4500,
+      });
     }
 
     document.addEventListener('selectionchange', function () {
       window.cancelAnimationFrame(selRaf);
-      selRaf = window.requestAnimationFrame(updateChip);
+      selRaf = window.requestAnimationFrame(updateSelectionToast);
     });
 
     window.addEventListener(
       'scroll',
       function () {
-        chip.classList.remove('is-visible');
+        lastSelectionText = '';
+        dismissSelectionToastOnly();
       },
       true,
     );
 
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') chip.classList.remove('is-visible');
+      if (e.key === 'Escape') {
+        lastSelectionText = '';
+        dismissSelectionToastOnly();
+      }
     });
   })();
 </script>
