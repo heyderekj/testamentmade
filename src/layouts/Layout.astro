@@ -141,8 +141,8 @@ const {
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    overflow: hidden;
-    contain: strict;
+    /* Blur + large drift extend far past inset; paint containment also clips */
+    overflow: visible;
   }
 
   .tm-bg__blob {

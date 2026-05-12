@@ -1,12 +1,9 @@
 ---
 import CoreValueHeroicon from './CoreValueHeroicon.astro';
 import { coreValues } from '../data/core-values';
-
-const headingId = 'core-values-heading';
 ---
 
-<section class="tm-dinky-core-values" aria-labelledby={headingId}>
-  <h2 class="tm-dinky-core-values__title" id={headingId}>What we stand for</h2>
+<section class="tm-dinky-core-values">
   <div class="tm-core-values-grid">
     {
       coreValues.map((item) => (
@@ -28,17 +25,7 @@ const headingId = 'core-values-heading';
     width: 100%;
     max-width: var(--max);
     margin-inline: auto;
-    padding-top: clamp(0.5rem, 2vw, 1rem);
-  }
-
-  .tm-dinky-core-values__title {
-    margin: 0 0 clamp(20px, 3vw, 24px);
-    text-align: center;
-    font-size: 22px;
-    font-weight: 600;
-    line-height: 1.15;
-    letter-spacing: -0.02em;
-    color: var(--dinky-text);
+    padding-top: clamp(1rem, 3vw, 1.5rem);
   }
 
   .tm-dinky-core-values .tm-core-values-grid {

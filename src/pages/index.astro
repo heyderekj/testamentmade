@@ -74,7 +74,8 @@ import { apps } from '../data/apps';
 
   .tm-hero-blobs {
     position: relative;
-    overflow: hidden;
+    /* Let blurred orbs extend past the hero box — overflow:hidden clipped them */
+    overflow: visible;
   }
 
   .tm-hero-blobs__foreground {
