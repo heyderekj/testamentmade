@@ -4,25 +4,6 @@ Static holding page for **[testamentmade.com](https://testamentmade.com)** — [
 
 Built with [Astro](https://astro.build) (static output) and deployed on [Netlify](https://www.netlify.com/).
 
-## Develop
-
-```bash
-git clone https://github.com/heyderekj/testamentmade.git
-cd testamentmade
-npm install
-npm run dev
-```
-
-- **Build:** `npm run build` (output in `dist/`)
-- **Preview:** `npm run preview`
-
-## Netlify
-
-1. New site from Git → connect **heyderekj/testamentmade**
-2. Build: `npm run build`, publish directory: `dist`
-3. `netlify.toml` sets **Node 20** to match common project defaults
-4. Add custom domain **testamentmade.com** and enable HTTPS
-
 ## App icons
 
 Icons are committed under `public/icons/` (not loaded from GitHub at runtime).

@@ -20,7 +20,7 @@ import { apps } from '../data/apps';
         </div>
         <div class="tm-hero-blobs__foreground">
           <h1 class="heading">
-            <span class="heading__lead">Apps to study Scripture, shrink files, and sort downloads —</span>
+            <span class="heading__lead">Apps to study Scripture, shrink files, and sort downloads&nbsp;—</span>
             <span class="heading__tail">
               made by{' '}
               <span class="author-hit" tabindex="0" role="group" aria-label="Testament Made LLC — Derek Castelli">
@@ -37,9 +37,46 @@ import { apps } from '../data/apps';
             </span>
           </h1>
 
-          <div class="grid">
-            {apps.map((app, index) => <AppCard {...app} index={index} />)}
-          </div>
+          <section class="app-showcase grid" aria-label="Apps by Testament Made">
+            <div class="app-showcase__viewport" id="app-showcase-viewport" tabindex="0">
+              {apps.map((app, index) => (
+                <div class="app-showcase__slide">
+                  <AppCard {...app} index={index} />
+                </div>
+              ))}
+            </div>
+            <div class="app-showcase__controls" id="app-showcase-controls">
+              <button
+                type="button"
+                class="app-showcase__arrow app-showcase__arrow--prev"
+                id="app-showcase-prev"
+                aria-controls="app-showcase-viewport"
+                aria-label="Previous app"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
+              </button>
+              <div class="app-showcase__dots" role="group" aria-label="Choose app to show">
+                {apps.map((app, i) => (
+                  <button
+                    type="button"
+                    class:list={['app-showcase__dot', { 'is-active': i === 0 }]}
+                    data-slide-to={String(i)}
+                    aria-label={`Show ${app.title}`}
+                    aria-current={i === 0 ? 'true' : undefined}
+                  />
+                ))}
+              </div>
+              <button
+                type="button"
+                class="app-showcase__arrow app-showcase__arrow--next"
+                id="app-showcase-next"
+                aria-controls="app-showcase-viewport"
+                aria-label="Next app"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6" /></svg>
+              </button>
+            </div>
+          </section>
         </div>
       </div>
 
@@ -107,18 +144,23 @@ import { apps } from '../data/apps';
     max-width: 28ch;
     text-align: center;
     font-weight: 600;
-    font-size: clamp(1.75rem, 4.5vw, 2.75rem);
+    font-size: clamp(1.625rem, 3.25vw + 0.35rem, 2.35rem);
     line-height: 1.2;
     letter-spacing: -0.02em;
     color: var(--text);
+    text-wrap: pretty;
   }
 
   @media (min-width: 52rem) {
     .heading {
-      max-width: 38ch;
+      max-width: min(44ch, 100%);
     }
 
     .heading__lead {
+      display: block;
+    }
+
+    .heading__tail {
       display: block;
     }
   }
@@ -241,31 +283,162 @@ import { apps } from '../data/apps';
     }
   }
 
-  /* App cards: 2 columns on small/medium, 3 from 52rem up */
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 2rem;
-    align-items: stretch;
+  /* App cards: horizontal carousel below 52rem; 3-column grid from 52rem up */
+  .app-showcase {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
   }
 
-  .grid :global(.app-card:nth-child(3)) {
-    grid-column: 1 / -1;
-    max-width: min(22rem, 100%);
-    margin-inline: auto;
+  .app-showcase__viewport {
     width: 100%;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 100%;
+    gap: clamp(1rem, 3.5vw, 1.5rem);
+    align-items: stretch;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    outline: none;
+    min-height: 0;
+  }
+
+  .app-showcase__viewport::-webkit-scrollbar {
+    display: none;
+  }
+
+  .app-showcase__viewport:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+    border-radius: 0.75rem;
+  }
+
+  .app-showcase__slide {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+
+  .app-showcase__slide :global(.app-card) {
+    flex: 1;
+    min-height: 100%;
+  }
+
+  .app-showcase__controls {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .app-showcase__arrow {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid var(--border-subtle);
+    background: var(--surface-elevated);
+    color: var(--text);
+    box-shadow: 0 1px 2px var(--shadow-soft);
+    cursor: pointer;
+    transition:
+      background 0.18s ease,
+      border-color 0.18s ease,
+      color 0.18s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .app-showcase__arrow:hover {
+    border-color: var(--border-strong);
+    box-shadow: 0 2px 8px var(--shadow-soft);
+  }
+
+  .app-showcase__arrow:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .app-showcase__arrow:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  .app-showcase__dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+  }
+
+  .app-showcase__dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    padding: 0;
+    border: none;
+    border-radius: 999px;
+    background: color-mix(in oklch, var(--muted) 45%, transparent);
+    cursor: pointer;
+    transition:
+      transform 0.2s ease,
+      background 0.2s ease,
+      width 0.2s ease;
+  }
+
+  .app-showcase__dot.is-active {
+    width: 1.35rem;
+    background: var(--accent);
+  }
+
+  .app-showcase__dot:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
   }
 
   @media (min-width: 52rem) {
-    .grid {
-      grid-template-columns: repeat(3, 1fr);
+    .app-showcase {
+      gap: 0;
     }
 
-    .grid :global(.app-card:nth-child(3)) {
-      grid-column: auto;
-      max-width: none;
-      margin-inline: unset;
-      width: auto;
+    .app-showcase__viewport {
+      display: grid;
+      grid-auto-flow: row;
+      grid-auto-columns: unset;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      overflow-x: visible;
+      overflow-y: visible;
+      scroll-snap-type: none;
+      scroll-behavior: auto;
+    }
+
+    .app-showcase__slide {
+      display: contents;
+      scroll-snap-align: unset;
+      scroll-snap-stop: normal;
+    }
+
+    .app-showcase__controls {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .app-showcase__viewport {
+      scroll-behavior: auto;
     }
   }
 
@@ -299,30 +472,30 @@ import { apps } from '../data/apps';
         border-color 0.28s ease;
     }
 
-    .grid.is-messy :global(.app-card:nth-child(1)) {
+    .grid.is-messy :global(.app-showcase__slide:nth-child(1) .app-card) {
       transform: rotate(-3deg) translate(-8px, 6px);
     }
 
-    .grid.is-messy :global(.app-card:nth-child(2)) {
+    .grid.is-messy :global(.app-showcase__slide:nth-child(2) .app-card) {
       transform: rotate(2deg) translate(0, -6px);
     }
 
-    .grid.is-messy :global(.app-card:nth-child(3)) {
+    .grid.is-messy :global(.app-showcase__slide:nth-child(3) .app-card) {
       transform: rotate(4deg) translate(8px, 4px);
     }
 
-    .grid.is-messy :global(.app-card:nth-child(1):hover),
-    .grid.is-messy :global(.app-card:nth-child(1):focus-visible) {
+    .grid.is-messy :global(.app-showcase__slide:nth-child(1) .app-card:hover),
+    .grid.is-messy :global(.app-showcase__slide:nth-child(1) .app-card:focus-visible) {
       transform: rotate(-3deg) translate(-8px, 6px) scale(1.02);
     }
 
-    .grid.is-messy :global(.app-card:nth-child(2):hover),
-    .grid.is-messy :global(.app-card:nth-child(2):focus-visible) {
+    .grid.is-messy :global(.app-showcase__slide:nth-child(2) .app-card:hover),
+    .grid.is-messy :global(.app-showcase__slide:nth-child(2) .app-card:focus-visible) {
       transform: rotate(2deg) translate(0, -6px) scale(1.02);
     }
 
-    .grid.is-messy :global(.app-card:nth-child(3):hover),
-    .grid.is-messy :global(.app-card:nth-child(3):focus-visible) {
+    .grid.is-messy :global(.app-showcase__slide:nth-child(3) .app-card:hover),
+    .grid.is-messy :global(.app-showcase__slide:nth-child(3) .app-card:focus-visible) {
       transform: rotate(4deg) translate(8px, 4px) scale(1.02);
     }
   }
@@ -566,5 +739,158 @@ import { apps } from '../data/apps';
         dismissSelectionToastOnly();
       }
     });
+  })();
+</script>
+
+<script is:inline>
+  (function tmAppCarousel() {
+    var mqCarousel = window.matchMedia('(max-width: 51.99rem)');
+    var mqReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var viewport = document.getElementById('app-showcase-viewport');
+    var prevBtn = document.getElementById('app-showcase-prev');
+    var nextBtn = document.getElementById('app-showcase-next');
+    var showcase = document.querySelector('.app-showcase');
+    if (!viewport || !prevBtn || !nextBtn || !showcase) return;
+
+    function slides() {
+      return viewport.querySelectorAll('.app-showcase__slide');
+    }
+
+    function nearestIndex() {
+      var list = slides();
+      if (!list.length) return 0;
+      var x = viewport.scrollLeft;
+      var best = 0;
+      var bestDist = Infinity;
+      for (var i = 0; i < list.length; i++) {
+        var d = Math.abs(list[i].offsetLeft - x);
+        if (d < bestDist) {
+          bestDist = d;
+          best = i;
+        }
+      }
+      return best;
+    }
+
+    function scrollToIndex(i, smooth) {
+      var list = slides();
+      if (!list.length) return;
+      var clamped = Math.max(0, Math.min(list.length - 1, i));
+      var el = list[clamped];
+      var useSmooth = smooth !== false && !mqReduce.matches;
+      viewport.scrollTo({
+        left: el.offsetLeft,
+        behavior: useSmooth ? 'smooth' : 'auto',
+      });
+    }
+
+    function updateUI() {
+      if (!mqCarousel.matches) return;
+      var idx = nearestIndex();
+      var list = slides();
+      var last = list.length - 1;
+      prevBtn.disabled = idx <= 0;
+      nextBtn.disabled = idx >= last;
+      var dots = showcase.querySelectorAll('.app-showcase__dot');
+      for (var d = 0; d < dots.length; d++) {
+        var on = d === idx;
+        dots[d].classList.toggle('is-active', on);
+        if (on) dots[d].setAttribute('aria-current', 'true');
+        else dots[d].removeAttribute('aria-current');
+      }
+    }
+
+    var autoTimer = null;
+
+    function stopAuto() {
+      if (autoTimer !== null) {
+        window.clearInterval(autoTimer);
+        autoTimer = null;
+      }
+    }
+
+    function startAuto() {
+      stopAuto();
+      if (!mqCarousel.matches || mqReduce.matches) return;
+      autoTimer = window.setInterval(function () {
+        var list = slides();
+        if (list.length < 2) return;
+        var idx = nearestIndex();
+        var next = (idx + 1) % list.length;
+        scrollToIndex(next, true);
+      }, 6000);
+    }
+
+    var scrollIdle = null;
+    function onScroll() {
+      window.requestAnimationFrame(updateUI);
+      if (scrollIdle !== null) window.clearTimeout(scrollIdle);
+      scrollIdle = window.setTimeout(function () {
+        scrollIdle = null;
+        updateUI();
+      }, 100);
+    }
+
+    prevBtn.addEventListener('click', function () {
+      scrollToIndex(nearestIndex() - 1, true);
+    });
+    nextBtn.addEventListener('click', function () {
+      scrollToIndex(nearestIndex() + 1, true);
+    });
+
+    var dots = showcase.querySelectorAll('.app-showcase__dot');
+    for (var i = 0; i < dots.length; i++) {
+      dots[i].addEventListener('click', (function (slide) {
+        return function () {
+          scrollToIndex(slide, true);
+        };
+      })(i));
+    }
+
+    viewport.addEventListener('scroll', onScroll, { passive: true });
+    viewport.addEventListener('scrollend', updateUI);
+
+    showcase.addEventListener('pointerenter', stopAuto);
+    showcase.addEventListener('pointerleave', function (e) {
+      if (e.relatedTarget && showcase.contains(e.relatedTarget)) return;
+      if (mqCarousel.matches) startAuto();
+    });
+
+    viewport.addEventListener('keydown', function (e) {
+      if (!mqCarousel.matches) return;
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        scrollToIndex(nearestIndex() - 1, true);
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        scrollToIndex(nearestIndex() + 1, true);
+      }
+    });
+
+    function onMqChange() {
+      stopAuto();
+      if (!mqCarousel.matches) {
+        viewport.scrollLeft = 0;
+      } else {
+        window.requestAnimationFrame(function () {
+          updateUI();
+          startAuto();
+        });
+      }
+      updateUI();
+    }
+
+    if (typeof mqCarousel.addEventListener === 'function') {
+      mqCarousel.addEventListener('change', onMqChange);
+    } else {
+      mqCarousel.addListener(onMqChange);
+    }
+
+    window.addEventListener('load', function () {
+      updateUI();
+      if (mqCarousel.matches) startAuto();
+    });
+    updateUI();
+    if (mqCarousel.matches) startAuto();
   })();
 </script>
