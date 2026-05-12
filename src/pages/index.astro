@@ -20,9 +20,9 @@ import { apps } from '../data/apps';
         </div>
         <div class="tm-hero-blobs__foreground">
           <h1 class="heading">
-            <span class="heading__lead">Apps to take notes, shrink files, and sort downloads.</span>
+            <span class="heading__lead">Take notes, shrink files, and sort downloads.</span>
             <span class="heading__tail">
-              Made by{' '}
+              Apps by{' '}
               <span class="author-hit" tabindex="0" role="group" aria-label="Testament Made LLC, Derek Castelli">
                 Testament Made LLC.
                 <a
@@ -144,11 +144,19 @@ import { apps } from '../data/apps';
     max-width: 28ch;
     text-align: center;
     font-weight: 600;
-    font-size: clamp(1.625rem, 3.25vw + 0.35rem, 2.35rem);
+    font-size: clamp(1.75rem, 3.65vw + 0.45rem, 2.7rem);
     line-height: 1.2;
     letter-spacing: -0.02em;
     color: var(--text);
     text-wrap: pretty;
+  }
+
+  .heading__lead {
+    display: block;
+  }
+
+  .heading__tail {
+    display: block;
   }
 
   @media (min-width: 52rem) {
@@ -157,15 +165,7 @@ import { apps } from '../data/apps';
     }
 
     .heading {
-      max-width: min(44ch, 100%);
-    }
-
-    .heading__lead {
-      display: block;
-    }
-
-    .heading__tail {
-      display: block;
+      max-width: min(48ch, 100%);
     }
   }
 
