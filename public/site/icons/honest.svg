@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" aria-hidden="true">
+  <defs>
+    <style>
+      .tile { fill: oklch(0.92 0.012 265); }
+      .ink { fill: oklch(0.528 0.196 267); }
+      @media (prefers-color-scheme: dark) {
+        .tile { fill: oklch(0.28 0.038 267); }
+        .ink { fill: oklch(0.715 0.148 259); }
+      }
+    </style>
+  </defs>
+  <rect class="tile" x="8" y="8" width="56" height="56" rx="14" />
+  <!-- compare / balance ends -->
+  <circle class="ink" cx="26" cy="36" r="5" />
+  <rect class="ink" x="31" y="33.5" width="10" height="5" rx="1.5" />
+  <circle class="ink" cx="46" cy="36" r="5" />
+</svg>

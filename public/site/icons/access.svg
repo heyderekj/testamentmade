@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" aria-hidden="true">
+  <defs>
+    <style>
+      .tile { fill: oklch(0.92 0.012 265); }
+      .ink { fill: oklch(0.528 0.196 267); }
+      @media (prefers-color-scheme: dark) {
+        .tile { fill: oklch(0.28 0.038 267); }
+        .ink { fill: oklch(0.715 0.148 259); }
+      }
+    </style>
+  </defs>
+  <rect class="tile" x="8" y="8" width="56" height="56" rx="14" />
+  <!-- person in circle (access) -->
+  <path class="ink" d="M36 21a5.5 5.5 0 100 .01zM24.5 46c0-6.4 5.1-11.5 11.5-11.5S47.5 39.6 47.5 46v3h-23v-3z" />
+</svg>

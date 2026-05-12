@@ -1,12 +1,13 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import AppCard from '../components/AppCard.astro';
+import CoreValues from '../components/CoreValues.astro';
 import { apps } from '../data/apps';
 ---
 
 <Layout
   title="Testament Made"
-  description="Testament Made LLC — Harvous, Dinky, and Binky. Contact and product links."
+  description="Testament Made LLC builds Harvous, Dinky, and Binky — Scripture study, file compression, and download sorting — with clear principles and contact links."
   preloadImages={apps.map((a) => a.iconSrc)}
 >
   <div class="page">
@@ -29,6 +30,8 @@ import { apps } from '../data/apps';
       <div class="grid">
         {apps.map((app, index) => <AppCard {...app} index={index} />)}
       </div>
+
+      <CoreValues />
 
       <div class="toast-slot" id="toast-slot" aria-live="polite" />
     </main>
