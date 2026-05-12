@@ -14,12 +14,21 @@ export type AppEntry = {
 
 export const apps: AppEntry[] = [
   {
+    title: 'Harvous',
+    tags: ['Web', 'Bible study'],
+    description:
+      'Notes-first Bible study — save, organize, and find what mattered again.',
+    href: 'https://harvous.com/',
+    iconSrc: '/icons/harvous.png',
+    linkLabel: 'harvous.com',
+  },
+  {
     title: 'Dinky',
     tags: ['macOS', 'Utilities'],
     description: 'Shrink images, videos, and PDFs — drag, compress, done.',
     href: 'https://dinkyfiles.com/',
     iconSrc: '/icons/dinky.png',
-    linkLabel: 'Site',
+    linkLabel: 'dinkyfiles.com',
   },
   {
     title: 'Binky',
@@ -27,15 +36,6 @@ export const apps: AppEntry[] = [
     description: 'Sorts your Downloads into sensible folders — nothing gets lost.',
     href: 'https://binkyfiles.com/',
     iconSrc: '/icons/binky.png',
-    linkLabel: 'Site',
-  },
-  {
-    title: 'Harvous',
-    tags: ['Web', 'Bible study'],
-    description:
-      'Notes-first Bible study — save, organize, and find what mattered again.',
-    href: 'https://harvous.com/',
-    iconSrc: '/icons/harvous.png',
-    linkLabel: 'Site',
+    linkLabel: 'binkyfiles.com',
   },
 ];
