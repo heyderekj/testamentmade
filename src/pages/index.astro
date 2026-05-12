@@ -97,6 +97,9 @@ import { apps } from '../data/apps';
     display: flex;
     flex-direction: column;
     gap: clamp(2rem, 5vw, 3rem);
+    /* Re-inset heading + cards: parent bleeds for orbs, content keeps page gutters */
+    padding-left: var(--page-pad-x);
+    padding-right: var(--page-pad-x);
   }
 
   .heading {
@@ -238,7 +241,34 @@ import { apps } from '../data/apps';
     }
   }
 
-  /* Bento: 3 equal columns on wide screens; single column on narrow */
+  /* App cards: 2 columns on small/medium, 3 from 52rem up */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem;
+    align-items: stretch;
+  }
+
+  .grid :global(.app-card:nth-child(3)) {
+    grid-column: 1 / -1;
+    max-width: min(22rem, 100%);
+    margin-inline: auto;
+    width: 100%;
+  }
+
+  @media (min-width: 52rem) {
+    .grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .grid :global(.app-card:nth-child(3)) {
+      grid-column: auto;
+      max-width: none;
+      margin-inline: unset;
+      width: auto;
+    }
+  }
+
   .toast-slot {
     width: 100%;
     display: flex;
@@ -258,19 +288,6 @@ import { apps } from '../data/apps';
     bottom: auto;
     z-index: 20;
     margin: 0;
-  }
-
-  .grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    align-items: stretch;
-  }
-
-  @media (min-width: 52rem) {
-    .grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
   }
 
   /* Easter egg (#8): Binky hover — playful fan-out while messy */
