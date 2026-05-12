@@ -15,7 +15,16 @@ const tagLine = tags.join(' · ');
   style={{ '--stagger': index }}
 >
   <span class="app-card__media" aria-hidden="true">
-    <img class="app-card__icon" src={iconSrc} alt="" width="120" height="120" loading="lazy" decoding="async" />
+    <img
+      class="app-card__icon"
+      src={iconSrc}
+      alt=""
+      width="120"
+      height="120"
+      loading={index === 0 ? 'eager' : 'lazy'}
+      decoding="async"
+      {...(index === 0 ? { fetchpriority: 'high' } : {})}
+    />
   </span>
   <span class="app-card__footer">
     <span class="app-card__meta">

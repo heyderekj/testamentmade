@@ -1,7 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
-  <rect width="32" height="32" rx="8" fill="#1a1a1a" />
-  <path
-    fill="#fafafa"
-    d="M8 22V10h3.2v4.4h5.6V10H20v12h-3.2v-4.8h-5.6V22H8Z"
-  />
+  <defs>
+    <linearGradient id="tm" x1="2" y1="30" x2="30" y2="2" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f41d68" />
+      <stop offset="0.48" stop-color="#4338e8" />
+      <stop offset="1" stop-color="#0095ff" />
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="8" fill="url(#tm)" />
 </svg>

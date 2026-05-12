@@ -2,11 +2,14 @@
 type Props = {
   title?: string;
   description?: string;
+  /** Same-origin image URLs to start fetching before the body parses (pairs with long-lived Cache-Control). */
+  preloadImages?: string[];
 };
 
 const {
   title = 'Testament Made',
   description = 'Apps from Testament Made LLC — Dinky, Binky, and Harvous.',
+  preloadImages = [],
 } = Astro.props;
 ---
 
@@ -18,6 +21,9 @@ const {
     <meta name="description" content={description} />
     <meta name="theme-color" content="#fafafa" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {preloadImages.map((href) => (
+      <link rel="preload" href={href} as="image" />
+    ))}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
