@@ -2,6 +2,8 @@
 type Props = {
   title?: string;
   description?: string;
+  /** Path from site root for og:image / twitter:image (default: /tm-open-graph.png). */
+  image?: string;
   /** Same-origin image URLs to start fetching before the body parses (pairs with long-lived Cache-Control). */
   preloadImages?: string[];
 };
@@ -9,8 +11,17 @@ type Props = {
 const {
   title = 'Testament Made',
   description = 'Apps from Testament Made LLC — Harvous, Dinky, and Binky.',
+  image = '/tm-open-graph.png',
   preloadImages = [],
 } = Astro.props;
+
+const imagePath = image.startsWith('/') ? image : `/${image}`;
+const pageUrl = Astro.site
+  ? new URL(Astro.url.pathname, Astro.site).href
+  : new URL(Astro.url.pathname, Astro.url).href;
+const ogImageUrl = Astro.site
+  ? new URL(imagePath, Astro.site).href
+  : new URL(imagePath, Astro.url).href;
 ---
 
 <!doctype html>
@@ -19,6 +30,16 @@ const {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    <link rel="canonical" href={pageUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={pageUrl} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
     <meta name="theme-color" content="#f7f9fc" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0d111c" media="(prefers-color-scheme: dark)" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
