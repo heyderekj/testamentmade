@@ -23,10 +23,19 @@ import { apps } from '../data/apps';
             <span class="heading__lead">Take notes, shrink files, and sort downloads.</span>{' '}
             <span class="heading__tail">
               Apps by{' '}
-              <span class="author-hit" tabindex="0" role="group" aria-label="Testament Made LLC, Derek Castelli">
-                Testament Made LLC.
+              <span
+                class="author-hit"
+                id="author-hit"
+                tabindex="0"
+                role="group"
+                aria-label="Testament Made LLC, Derek Castelli"
+                aria-expanded="false"
+                aria-controls="about-derek-chip"
+              >
+                <span class="author-hit__name">Testament Made LLC.</span>
                 <a
                   class="about-chip"
+                  id="about-derek-chip"
                   href="https://heyderekj.com/"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -158,6 +167,30 @@ import { apps } from '../data/apps';
     display: inline;
   }
 
+  @media (max-width: 51.99rem) {
+    .heading {
+      font-size: clamp(0.95rem, 2.85vw + 0.3rem, 1.3rem);
+      max-width: min(22.5rem, 100%);
+      line-height: 1.22;
+    }
+
+    .heading__lead,
+    .heading__tail {
+      display: block;
+    }
+
+    .heading__tail {
+      margin-top: 0.12em;
+    }
+
+    .heading__lead {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+    }
+  }
+
   @media (min-width: 52rem) {
     .tm-hero-blobs__foreground {
       padding-top: clamp(2.5rem, 8vh, 6rem);
@@ -240,16 +273,18 @@ import { apps } from '../data/apps';
     line-height: 1;
   }
 
-  .author-hit:hover .about-chip,
-  .author-hit:focus-within .about-chip {
-    visibility: visible;
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-    pointer-events: auto;
-    transition:
-      opacity 0.2s ease,
-      transform 0.2s ease,
-      visibility 0s linear 0s;
+  @media (hover: hover) {
+    .author-hit:hover .about-chip,
+    .author-hit:focus-within .about-chip {
+      visibility: visible;
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+      transition:
+        opacity 0.2s ease,
+        transform 0.2s ease,
+        visibility 0s linear 0s;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -259,35 +294,40 @@ import { apps } from '../data/apps';
     }
   }
 
-  /* Touch / no-hover: keep link usable without hovering */
+  /* Touch / coarse pointer: chip opens on tap of company name (see tmAuthorHitTouch) */
   @media (hover: none) {
     .author-hit {
-      display: inline;
       padding-bottom: 0;
       margin-bottom: 0;
     }
 
-    .about-chip {
-      position: relative;
-      left: auto;
-      top: auto;
-      transform: none;
-      margin-left: 0.45em;
-      white-space: normal;
-      max-width: 12rem;
-      text-align: left;
-      vertical-align: baseline;
-      font-size: 0.7rem;
-      visibility: visible;
-      opacity: 1;
-      pointer-events: auto;
-      display: inline-flex;
+    .author-hit__name {
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.14em;
+      text-decoration-color: color-mix(in oklch, currentColor 32%, transparent);
     }
 
-    .about-chip:not(:focus-visible):not(:hover) {
-      box-shadow:
-        0 1px 3px var(--shadow-soft),
-        0 6px 18px var(--shadow-deep);
+    .about-chip {
+      top: 100%;
+      bottom: auto;
+      margin-top: 0.35rem;
+      transform: translateX(-50%) translateY(4px);
+      max-width: min(12rem, calc(100vw - 2.5rem));
+    }
+
+    .author-hit.is-about-open .about-chip,
+    .author-hit:focus-within .about-chip {
+      visibility: visible;
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+      transition:
+        opacity 0.2s ease,
+        transform 0.2s ease,
+        visibility 0s linear 0s;
     }
   }
 
@@ -1039,5 +1079,41 @@ import { apps } from '../data/apps';
     });
     updateUI();
     if (mqCarousel.matches) startAuto();
+  })();
+</script>
+
+<script is:inline>
+  (function tmAuthorHitTouch() {
+    var hit = document.getElementById('author-hit');
+    var nameEl = document.querySelector('.author-hit__name');
+    var mq = window.matchMedia('(hover: none)');
+    if (!hit || !nameEl) return;
+
+    function setOpen(on) {
+      hit.classList.toggle('is-about-open', on);
+      hit.setAttribute('aria-expanded', on ? 'true' : 'false');
+    }
+
+    nameEl.addEventListener('click', function (e) {
+      if (!mq.matches) return;
+      e.stopPropagation();
+      setOpen(!hit.classList.contains('is-about-open'));
+    });
+
+    document.addEventListener(
+      'click',
+      function (e) {
+        if (!mq.matches) return;
+        if (!hit.contains(e.target)) setOpen(false);
+      },
+      true,
+    );
+
+    function onMqChange() {
+      if (!mq.matches) setOpen(false);
+    }
+
+    if (typeof mq.addEventListener === 'function') mq.addEventListener('change', onMqChange);
+    else mq.addListener(onMqChange);
   })();
 </script>

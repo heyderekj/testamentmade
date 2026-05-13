@@ -39,7 +39,7 @@ export const coreValues: CoreValue[] = [
     icon: 'computer-desktop',
   },
   {
-    title: 'Open source when it helps',
+    title: 'Open source',
     description:
       'Ship code you can inspect, fork, and trust whenever openness is the right trade for users and the ecosystem.',
     icon: 'code-bracket',
