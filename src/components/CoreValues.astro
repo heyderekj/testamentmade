@@ -28,6 +28,13 @@ import { coreValues } from '../data/core-values';
     padding-top: clamp(1rem, 3vw, 1.5rem);
   }
 
+  /* Same content width as hero `.heading` on desktop (see index.astro 52rem) */
+  @media (min-width: 52rem) {
+    .tm-dinky-core-values {
+      max-width: min(48ch, 100%);
+    }
+  }
+
   .tm-dinky-core-values .tm-core-values-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
