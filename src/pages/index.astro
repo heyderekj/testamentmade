@@ -3,6 +3,9 @@ import Layout from '../layouts/Layout.astro';
 import AppCard from '../components/AppCard.astro';
 import CoreValues from '../components/CoreValues.astro';
 import { apps } from '../data/apps';
+
+/** Set to `true` when the core values block should appear again. */
+const showCoreValuesSection = false;
 ---
 
 <Layout
@@ -91,7 +94,7 @@ import { apps } from '../data/apps';
         </div>
       </div>
 
-      <CoreValues />
+      {showCoreValuesSection && <CoreValues />}
 
       <div class="toast-slot" id="toast-slot" aria-live="polite" />
     </main>
@@ -613,7 +616,6 @@ import { apps } from '../data/apps';
   .footer {
     margin-top: clamp(1rem, 3vw, 1.5rem);
     padding-top: 0.75rem;
-    border-top: 1px solid var(--footer-border);
     font-size: 13px;
     color: var(--muted);
     text-align: center;
