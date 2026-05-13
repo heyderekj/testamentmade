@@ -320,8 +320,16 @@ import { apps } from '../data/apps';
 
   /* Room for card box-shadow + icon drop-shadow inside scrollport (carousel only). */
   @media (max-width: 51.99rem) {
+    .app-showcase {
+      gap: clamp(1.5rem, 5vw, 2.25rem);
+    }
+
     .app-showcase__viewport {
-      padding-block: clamp(1.25rem, 4.5vw, 2.25rem);
+      align-items: start;
+      flex-shrink: 0;
+      min-height: auto;
+      padding-top: clamp(1.25rem, 4.5vw, 2.25rem);
+      padding-bottom: clamp(2.25rem, 8vw, 3.5rem);
       padding-inline: clamp(1rem, 5vw, 1.75rem);
       scroll-padding-inline: clamp(1rem, 5vw, 1.75rem);
     }
@@ -330,7 +338,14 @@ import { apps } from '../data/apps';
     .app-showcase__slide {
       box-sizing: border-box;
       padding-inline: clamp(0.75rem, 3.25vw, 1.25rem);
-      padding-block: clamp(0.85rem, 3.25vw, 1.5rem);
+      padding-top: clamp(0.85rem, 3.25vw, 1.5rem);
+      padding-bottom: clamp(1.5rem, 6vw, 2.75rem);
+    }
+
+    /* Natural card height so bottom shadow + icon glow aren’t flush with the slide edge. */
+    .app-showcase__slide :global(.app-card) {
+      flex: 0 1 auto;
+      min-height: 0;
     }
   }
 
