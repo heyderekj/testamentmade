@@ -169,9 +169,9 @@ import { apps } from '../data/apps';
 
   @media (max-width: 51.99rem) {
     .heading {
-      font-size: clamp(0.95rem, 2.85vw + 0.3rem, 1.3rem);
-      max-width: min(22.5rem, 100%);
-      line-height: 1.22;
+      font-size: clamp(1.12rem, 4.1vw + 0.45rem, 1.6rem);
+      max-width: min(21.5rem, 100%);
+      line-height: 1.24;
     }
 
     .heading__lead,
@@ -181,13 +181,6 @@ import { apps } from '../data/apps';
 
     .heading__tail {
       margin-top: 0.12em;
-    }
-
-    .heading__lead {
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2;
-      overflow: hidden;
     }
   }
 
@@ -334,18 +327,10 @@ import { apps } from '../data/apps';
   /* App cards: horizontal carousel below 52rem; 3-column grid from 52rem up */
   .app-showcase {
     --carousel-autoplay-ms: 6000ms;
-    /* App-icon blues (~blob indigo → blue) */
-    --carousel-dot-fill: linear-gradient(135deg, oklch(0.48 0.21 279), oklch(0.62 0.17 246));
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    .app-showcase {
-      --carousel-dot-fill: linear-gradient(135deg, oklch(0.58 0.14 264), oklch(0.7 0.11 250));
-    }
   }
 
   .app-showcase__viewport {
@@ -497,7 +482,8 @@ import { apps } from '../data/apps';
     transform: scaleX(0);
     transform-origin: left center;
     opacity: 0;
-    background: var(--carousel-dot-fill);
+    /* Same as core-values titles / feature icons (--dinky-text → --text) */
+    background: var(--text);
   }
 
   .app-showcase__dot.is-active {
@@ -905,6 +891,8 @@ import { apps } from '../data/apps';
   (function tmAppCarousel() {
     var mqCarousel = window.matchMedia('(max-width: 51.99rem)');
     var mqReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    /** Touch taps fire pointerenter; only pause autoplay for mouse/trackpad hover */
+    var mqFineHover = window.matchMedia('(hover: hover) and (pointer: fine)');
     var viewport = document.getElementById('app-showcase-viewport');
     var prevBtn = document.getElementById('app-showcase-prev');
     var nextBtn = document.getElementById('app-showcase-next');
@@ -1028,10 +1016,12 @@ import { apps } from '../data/apps';
     viewport.addEventListener('scrollend', updateUI);
 
     showcase.addEventListener('pointerenter', function () {
+      if (!mqFineHover.matches) return;
       stopAuto();
       showcase.classList.add('app-showcase--carousel-paused');
     });
     showcase.addEventListener('pointerleave', function (e) {
+      if (!mqFineHover.matches) return;
       if (e.relatedTarget && showcase.contains(e.relatedTarget)) return;
       showcase.classList.remove('app-showcase--carousel-paused');
       if (mqCarousel.matches) {
