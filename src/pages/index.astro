@@ -169,11 +169,11 @@ import { apps } from '../data/apps';
 
   @media (max-width: 51.99rem) {
     .heading {
-      font-size: clamp(0.68rem, 2.1vw + 0.26rem, 1.45rem);
-      max-width: 100%;
-      line-height: 1.22;
-      text-wrap: wrap;
-      letter-spacing: -0.028em;
+      font-size: clamp(1.05rem, 3.75vw + 0.4rem, 1.58rem);
+      max-width: min(22rem, 100%);
+      line-height: 1.24;
+      text-wrap: pretty;
+      letter-spacing: -0.02em;
     }
 
     .heading__lead,
@@ -181,20 +181,9 @@ import { apps } from '../data/apps';
       display: block;
     }
 
-    /* One line for the first sentence so “Apps by …” begins line 2 */
-    .heading__lead {
-      white-space: nowrap;
-    }
-
     .heading__tail {
-      margin-top: 0.14em;
+      margin-top: 0.12em;
       white-space: normal;
-    }
-  }
-
-  @media (max-width: 22.5rem) {
-    .heading {
-      font-size: clamp(0.64rem, 1.95vw + 0.22rem, 1.32rem);
     }
   }
 
