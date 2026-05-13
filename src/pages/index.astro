@@ -569,6 +569,7 @@ import { apps } from '../data/apps';
   (function tmHoldingEggs() {
     var mqReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
     var dinky = document.querySelector('[data-app="dinky"]');
+    var binky = document.querySelector('[data-app="binky"]');
     var grid = document.querySelector('.grid');
     var toastSlot = document.getElementById('toast-slot');
     var tmBg = document.getElementById('tm-bg');
@@ -675,7 +676,12 @@ import { apps } from '../data/apps';
       return false;
     }
 
-    if (dinky && toastSlot) {
+    function clearFileDropTargets() {
+      if (dinky) dinky.classList.remove('is-drop-target');
+      if (binky) binky.classList.remove('is-drop-target');
+    }
+
+    if (toastSlot && (dinky || binky)) {
       document.addEventListener(
         'dragover',
         function (e) {
@@ -683,36 +689,55 @@ import { apps } from '../data/apps';
           e.preventDefault();
           e.dataTransfer.dropEffect = 'copy';
           var el = document.elementFromPoint(e.clientX, e.clientY);
-          if (el && dinky.contains(el)) dinky.classList.add('is-drop-target');
-          else dinky.classList.remove('is-drop-target');
+          var card = el && el.closest && el.closest('.app-card');
+          clearFileDropTargets();
+          if (dinky && card === dinky) dinky.classList.add('is-drop-target');
+          else if (binky && card === binky) binky.classList.add('is-drop-target');
         },
         { passive: false },
       );
 
-      document.addEventListener('dragend', function () {
-        dinky.classList.remove('is-drop-target');
-      });
+      document.addEventListener('dragend', clearFileDropTargets);
 
       document.addEventListener('drop', function (e) {
-        dinky.classList.remove('is-drop-target');
+        clearFileDropTargets();
         if (!hasFilePayload(e.dataTransfer)) return;
-        if (!e.target || !dinky.contains(e.target)) return;
-        e.preventDefault();
-        var n = e.dataTransfer.files ? e.dataTransfer.files.length : 0;
-        if (n <= 0) return;
-        showToast({
-          message:
-            n === 1
-              ? 'Want to actually shrink that? Try Dinky — dinkyfiles.com'
-              : 'Want to actually shrink those? Try Dinky — dinkyfiles.com',
-          href: 'https://dinkyfiles.com/',
-          source: 'drop',
-          durationMs: 4500,
-        });
+
+        var onDinky = dinky && e.target && dinky.contains(e.target);
+        var onBinky = binky && e.target && binky.contains(e.target);
+
+        if (onDinky) {
+          e.preventDefault();
+          var nD = e.dataTransfer.files ? e.dataTransfer.files.length : 0;
+          if (nD <= 0) return;
+          showToast({
+            message:
+              nD === 1
+                ? 'Want to actually shrink that? Try Dinky — dinkyfiles.com'
+                : 'Want to actually shrink those? Try Dinky — dinkyfiles.com',
+            href: 'https://dinkyfiles.com/',
+            source: 'drop-dinky',
+            durationMs: 4500,
+          });
+          return;
+        }
+
+        if (onBinky) {
+          e.preventDefault();
+          var nB = e.dataTransfer.files ? e.dataTransfer.files.length : 0;
+          if (nB <= 0) return;
+          showToast({
+            message:
+              nB === 1
+                ? 'Want that sorted for you? Try Binky — binkyfiles.com'
+                : 'Want those sorted for you? Try Binky — binkyfiles.com',
+            href: 'https://binkyfiles.com/',
+            source: 'drop-binky',
+            durationMs: 4500,
+          });
+        }
       });
     }
-
-    var binky = document.querySelector('[data-app="binky"]');
     var messyTimer = 0;
     if (grid && binky && !mqReduce.matches) {
       binky.addEventListener('pointerenter', function () {
