@@ -63,7 +63,9 @@ import { apps } from '../data/apps';
                     data-slide-to={String(i)}
                     aria-label={`Show ${app.title}`}
                     aria-current={i === 0 ? 'true' : undefined}
-                  />
+                  >
+                    <span class="app-showcase__dot-progress" aria-hidden="true" />
+                  </button>
                 ))}
               </div>
               <button
@@ -291,10 +293,19 @@ import { apps } from '../data/apps';
 
   /* App cards: horizontal carousel below 52rem; 3-column grid from 52rem up */
   .app-showcase {
+    --carousel-autoplay-ms: 6000ms;
+    /* App-icon blues (~blob indigo → blue) */
+    --carousel-dot-fill: linear-gradient(135deg, oklch(0.48 0.21 279), oklch(0.62 0.17 246));
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .app-showcase {
+      --carousel-dot-fill: linear-gradient(135deg, oklch(0.58 0.14 264), oklch(0.7 0.11 250));
+    }
   }
 
   .app-showcase__viewport {
@@ -321,7 +332,7 @@ import { apps } from '../data/apps';
   /* Room for card box-shadow + icon drop-shadow inside scrollport (carousel only). */
   @media (max-width: 51.99rem) {
     .app-showcase {
-      gap: clamp(1.5rem, 5vw, 2.25rem);
+      gap: clamp(0.25rem, 1.75vw, 0.625rem);
     }
 
     .app-showcase__viewport {
@@ -329,7 +340,7 @@ import { apps } from '../data/apps';
       flex-shrink: 0;
       min-height: auto;
       padding-top: clamp(1.25rem, 4.5vw, 2.25rem);
-      padding-bottom: clamp(2.25rem, 8vw, 3.5rem);
+      padding-bottom: clamp(1.35rem, 5vw, 2.25rem);
       padding-inline: clamp(1rem, 5vw, 1.75rem);
       scroll-padding-inline: clamp(1rem, 5vw, 1.75rem);
     }
@@ -422,6 +433,8 @@ import { apps } from '../data/apps';
   }
 
   .app-showcase__dot {
+    position: relative;
+    box-sizing: border-box;
     width: 0.5rem;
     height: 0.5rem;
     padding: 0;
@@ -429,20 +442,64 @@ import { apps } from '../data/apps';
     border-radius: 999px;
     background: color-mix(in oklch, var(--muted) 45%, transparent);
     cursor: pointer;
+    flex-shrink: 0;
     transition:
-      transform 0.2s ease,
-      background 0.2s ease,
-      width 0.2s ease;
+      width 0.2s ease,
+      height 0.2s ease,
+      background 0.2s ease;
+  }
+
+  .app-showcase__dot-progress {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    transform: scaleX(0);
+    transform-origin: left center;
+    opacity: 0;
+    background: var(--carousel-dot-fill);
   }
 
   .app-showcase__dot.is-active {
     width: 1.35rem;
-    background: var(--accent);
+    height: 0.5rem;
+    background: color-mix(in oklch, var(--muted) 28%, var(--card-bg));
+  }
+
+  .app-showcase__dot:not(.is-active) .app-showcase__dot-progress {
+    opacity: 0;
+    animation: none !important;
+    transform: scaleX(0);
+  }
+
+  .app-showcase__dot.is-active .app-showcase__dot-progress {
+    opacity: 1;
+    animation: app-showcase-dot-progress var(--carousel-autoplay-ms, 6000ms) linear forwards;
+  }
+
+  .app-showcase--carousel-paused .app-showcase__dot.is-active .app-showcase__dot-progress {
+    animation-play-state: paused;
   }
 
   .app-showcase__dot:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 3px;
+  }
+
+  @keyframes app-showcase-dot-progress {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .app-showcase__dot.is-active .app-showcase__dot-progress {
+      animation: none;
+      transform: scaleX(1);
+    }
   }
 
   @media (min-width: 52rem) {
@@ -846,6 +903,17 @@ import { apps } from '../data/apps';
       });
     }
 
+    var lastCarouselIdx = -1;
+
+    function restartActiveDotProgress() {
+      if (mqReduce.matches) return;
+      var p = showcase.querySelector('.app-showcase__dot.is-active .app-showcase__dot-progress');
+      if (!p) return;
+      p.style.animation = 'none';
+      void p.offsetWidth;
+      p.style.removeProperty('animation');
+    }
+
     function updateUI() {
       if (!mqCarousel.matches) return;
       var idx = nearestIndex();
@@ -854,15 +922,22 @@ import { apps } from '../data/apps';
       prevBtn.disabled = idx <= 0;
       nextBtn.disabled = idx >= last;
       var dots = showcase.querySelectorAll('.app-showcase__dot');
+      var idxChanged = idx !== lastCarouselIdx;
       for (var d = 0; d < dots.length; d++) {
         var on = d === idx;
         dots[d].classList.toggle('is-active', on);
         if (on) dots[d].setAttribute('aria-current', 'true');
         else dots[d].removeAttribute('aria-current');
       }
+      if (idxChanged) {
+        lastCarouselIdx = idx;
+        restartActiveDotProgress();
+      }
     }
 
     var autoTimer = null;
+    /** Keep equal to `.app-showcase { --carousel-autoplay-ms }` in CSS */
+    var AUTOPLAY_MS = 6000;
 
     function stopAuto() {
       if (autoTimer !== null) {
@@ -880,7 +955,7 @@ import { apps } from '../data/apps';
         var idx = nearestIndex();
         var next = (idx + 1) % list.length;
         scrollToIndex(next, true);
-      }, 6000);
+      }, AUTOPLAY_MS);
     }
 
     var scrollIdle = null;
@@ -912,10 +987,17 @@ import { apps } from '../data/apps';
     viewport.addEventListener('scroll', onScroll, { passive: true });
     viewport.addEventListener('scrollend', updateUI);
 
-    showcase.addEventListener('pointerenter', stopAuto);
+    showcase.addEventListener('pointerenter', function () {
+      stopAuto();
+      showcase.classList.add('app-showcase--carousel-paused');
+    });
     showcase.addEventListener('pointerleave', function (e) {
       if (e.relatedTarget && showcase.contains(e.relatedTarget)) return;
-      if (mqCarousel.matches) startAuto();
+      showcase.classList.remove('app-showcase--carousel-paused');
+      if (mqCarousel.matches) {
+        restartActiveDotProgress();
+        startAuto();
+      }
     });
 
     viewport.addEventListener('keydown', function (e) {
@@ -931,9 +1013,12 @@ import { apps } from '../data/apps';
 
     function onMqChange() {
       stopAuto();
+      showcase.classList.remove('app-showcase--carousel-paused');
       if (!mqCarousel.matches) {
         viewport.scrollLeft = 0;
+        lastCarouselIdx = -1;
       } else {
+        lastCarouselIdx = -1;
         window.requestAnimationFrame(function () {
           updateUI();
           startAuto();
