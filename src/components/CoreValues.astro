@@ -28,10 +28,11 @@ import { coreValues } from '../data/core-values';
     padding-top: clamp(1rem, 3vw, 1.5rem);
   }
 
-  /* Same content width as hero `.heading` on desktop (see index.astro 52rem) */
+  /* Cap feature grid width on desktop (hero heading keeps its own ch-based max-width) */
   @media (min-width: 52rem) {
-    .tm-dinky-core-values {
-      max-width: min(820px, 100%);
+    .tm-dinky-core-values .tm-core-values-grid {
+      max-width: min(860px, 100%);
+      margin-inline: auto;
     }
   }
 
