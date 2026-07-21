@@ -1,5 +1,5 @@
 export type AppEntry = {
-  slug: 'harvous' | 'dinky' | 'binky';
+  slug: 'harvous' | 'revisemy' | 'dinky' | 'binky';
   title: string;
   /** Short line under the title (tags row) */
   tags: string[];
@@ -23,6 +23,16 @@ export const apps: AppEntry[] = [
     href: 'https://harvous.com/',
     iconSrc: '/icons/harvous.png',
     linkLabel: 'harvous.com',
+  },
+  {
+    slug: 'revisemy',
+    title: 'ReviseMy',
+    tags: ['Web', 'Design review'],
+    description:
+      'Mark feedback for your agent — human-in-the-loop design checkup over MCP.',
+    href: 'https://revisemy.com/',
+    iconSrc: '/icons/revisemy.png',
+    linkLabel: 'revisemy.com',
   },
   {
     slug: 'dinky',

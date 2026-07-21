@@ -10,7 +10,7 @@ type Props = {
 
 const {
   title = 'Testament Made',
-  description = 'Apps from Testament Made LLC — Harvous, Dinky, and Binky.',
+  description = 'Apps from Testament Made LLC — Harvous, ReviseMy, Dinky, and Binky.',
   image = '/tm-open-graph.png',
   preloadImages = [],
 } = Astro.props;
@@ -286,7 +286,8 @@ const ogImageUrl = Astro.site
   }
 
   /* Hover an app card: only that orb reads at full warmth */
-  .tm-bg[data-accent='binky'] .tm-bg__blob--pink {
+  .tm-bg[data-accent='binky'] .tm-bg__blob--pink,
+  .tm-bg[data-accent='revisemy'] .tm-bg__blob--pink {
     opacity: var(--blob-accent-opacity);
     z-index: 1;
   }
@@ -302,7 +303,9 @@ const ogImageUrl = Astro.site
   }
 
   .tm-bg[data-accent='binky'] .tm-bg__blob--indigo,
-  .tm-bg[data-accent='binky'] .tm-bg__blob--blue {
+  .tm-bg[data-accent='binky'] .tm-bg__blob--blue,
+  .tm-bg[data-accent='revisemy'] .tm-bg__blob--indigo,
+  .tm-bg[data-accent='revisemy'] .tm-bg__blob--blue {
     opacity: 0;
     animation: none;
   }
