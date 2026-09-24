@@ -3,17 +3,19 @@ import type { AppEntry } from '../data/apps';
 
 type Props = AppEntry & { index: number };
 
-const { title, tags, href, iconSrc, linkLabel, slug, index } = Astro.props;
+const { title, tags, href, iconSrc, linkLabel, slug, index, soon } = Astro.props;
 const tagLine = tags.join(' · ');
+
+// An app that isn't open yet has nowhere to go, so its card isn't a link.
+const Tag = href ? 'a' : 'div';
+const link = href ? { href, target: '_blank', rel: 'noopener noreferrer' } : {};
 ---
 
-<a
-  class="app-card"
+<Tag
+  class:list={['app-card', { 'is-soon': soon }]}
   id={`card-${slug}`}
   data-app={slug}
-  href={href}
-  target="_blank"
-  rel="noopener noreferrer"
+  {...link}
   style={{ '--stagger': index }}
 >
   <span class="app-card__media" aria-hidden="true">
@@ -33,9 +35,9 @@ const tagLine = tags.join(' · ');
       <span class="app-card__title">{title}</span>
       <span class="app-card__tags">{tagLine}</span>
     </span>
-    <span class="app-card__label">{linkLabel}</span>
+    {soon ? <span class="app-card__soon">Coming soon</span> : <span class="app-card__label">{linkLabel}</span>}
   </span>
-</a>
+</Tag>
 
 <style>
   .app-card {
@@ -126,6 +128,23 @@ const tagLine = tags.join(' · ');
     font-size: 0.82rem;
     font-weight: 500;
     color: var(--muted);
+  }
+
+  .app-card__soon {
+    flex-shrink: 0;
+    padding: 0.28rem 0.6rem;
+    border-radius: 999px;
+    background: color-mix(in oklch, var(--accent) 14%, var(--card-bg));
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  /* Nothing to open yet, so it doesn't lift like a link does. */
+  .app-card.is-soon:hover {
+    transform: none;
   }
 
   .app-card.is-drop-target {

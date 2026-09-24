@@ -1,12 +1,15 @@
 export type AppEntry = {
-  slug: 'harvous' | 'revisemy' | 'dinky' | 'binky';
+  slug: 'harvous' | 'revisemy' | 'dinky' | 'binky' | 'koati';
   title: string;
   /** Short line under the title (tags row) */
   tags: string[];
-  href: string;
+  /** Where the card goes. Absent for an app that isn't open yet. */
+  href?: string;
   iconSrc: string;
   /** Shown bottom-right on the card */
-  linkLabel: string;
+  linkLabel?: string;
+  /** Not open yet: the card shows a “Coming soon” badge and links nowhere. */
+  soon?: boolean;
   /** Optional “More” line inside the card (App Store–friendly context) */
   description?: string;
   /** If set, footer can list privacy link (future) */
@@ -51,5 +54,13 @@ export const apps: AppEntry[] = [
     href: 'https://binkyfiles.com/',
     iconSrc: '/icons/binky.png',
     linkLabel: 'binkyfiles.com',
+  },
+  {
+    slug: 'koati',
+    title: 'Koati',
+    tags: ['Web', 'Marketing teams'],
+    description: 'Turns requests into agreed work, and whoever asked sees where it stands.',
+    iconSrc: '/icons/koati.png',
+    soon: true,
   },
 ];

@@ -10,7 +10,7 @@ const showCoreValuesSection = false;
 
 <Layout
   title="Testament Made"
-  description="Testament Made LLC builds Harvous, ReviseMy, Dinky, and Binky — apps to take notes, mark design feedback, shrink files, and sort downloads — with clear principles and contact links."
+  description="Testament Made LLC builds Harvous, ReviseMy, Dinky, Binky, and Koati (coming soon) — apps to take notes, mark design feedback, shrink files, sort downloads, and turn requests into agreed work — with clear principles and contact links."
   preloadImages={apps.map((a) => a.iconSrc)}
 >
   <div class="page">
@@ -24,7 +24,7 @@ const showCoreValuesSection = false;
         <div class="tm-hero-blobs__foreground">
           <h1 class="heading">
             <span class="heading__lead">
-              Take notes, mark feedback,<br />shrink files, and sort downloads.
+              Take notes, mark feedback, shrink files,<br /> sort downloads, and turn requests into work.
             </span>
             <span class="heading__tail">
               Apps by{' '}
@@ -168,6 +168,14 @@ const showCoreValuesSection = false;
 
   .heading__lead {
     display: block;
+    text-wrap: balance;
+  }
+
+  /* The break sets two even lines on a wide screen; a phone balances its own. */
+  @media (max-width: 52rem) {
+    .heading__lead br {
+      display: none;
+    }
   }
 
   .heading__tail {
@@ -325,7 +333,7 @@ const showCoreValuesSection = false;
     }
   }
 
-  /* App cards: horizontal carousel below 52rem; 2×2 grid from 52rem up */
+  /* App cards: horizontal carousel below 52rem; three over two from 52rem up */
   .app-showcase {
     --carousel-autoplay-ms: 6000ms;
     width: 100%;
@@ -539,9 +547,11 @@ const showCoreValuesSection = false;
       display: grid;
       grid-auto-flow: row;
       grid-auto-columns: unset;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      /* Six tracks, two to a card, so the second row of two sits centred
+         under the three above it. */
+      grid-template-columns: repeat(6, minmax(0, 1fr));
       gap: 1.5rem;
-      max-width: 42rem;
+      max-width: 63rem;
       margin-inline: auto;
       overflow-x: visible;
       overflow-y: visible;
@@ -553,6 +563,14 @@ const showCoreValuesSection = false;
       display: contents;
       scroll-snap-align: unset;
       scroll-snap-stop: normal;
+    }
+
+    .app-showcase__viewport :global(.app-card) {
+      grid-column: span 2;
+    }
+
+    .app-showcase__viewport :global(.app-showcase__slide:nth-child(4) .app-card) {
+      grid-column: 2 / span 2;
     }
 
     .app-showcase__controls {
@@ -630,6 +648,14 @@ const showCoreValuesSection = false;
     .grid.is-messy :global(.app-showcase__slide:nth-child(4) .app-card:hover),
     .grid.is-messy :global(.app-showcase__slide:nth-child(4) .app-card:focus-visible) {
       transform: rotate(4deg) translate(8px, 4px) scale(1.02);
+    }
+
+    .grid.is-messy :global(.app-showcase__slide:nth-child(5) .app-card) {
+      transform: rotate(-2deg) translate(-4px, 8px);
+    }
+
+    .grid.is-messy :global(.app-showcase__slide:nth-child(5) .app-card:focus-visible) {
+      transform: rotate(-2deg) translate(-4px, 8px) scale(1.02);
     }
   }
 
