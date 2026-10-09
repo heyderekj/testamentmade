@@ -363,6 +363,14 @@ const signature = signatureStrokes.map((stroke, i) => {
     display: none;
   }
 
+  /* Touch screens swipe the row, so the arrows aren't needed there. Keyed to touch
+     rather than width, so a narrow desktop window keeps them. */
+  @media (hover: none) {
+    .showcase__arrows {
+      display: none;
+    }
+  }
+
   .showcase__arrow {
     width: 48px;
     height: 48px;
