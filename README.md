@@ -2,7 +2,7 @@
 
 Static holding page for **[testamentmade.com](https://testamentmade.com)** — [Testament Made LLC](https://testamentmade.com) apps with links suitable for App Store developer-site requirements.
 
-Built with [Astro](https://astro.build) (static output) and deployed on [Netlify](https://www.netlify.com/).
+Built with [Astro](https://astro.build) (static output) and deployed on [Cloudflare Pages](https://pages.cloudflare.com/).
 
 ## App icons
 
