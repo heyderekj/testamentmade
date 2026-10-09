@@ -3,19 +3,16 @@ import type { AppEntry } from '../data/apps';
 
 type Props = AppEntry & { index: number };
 
-const { title, tags, href, iconSrc, linkLabel, slug, index, soon } = Astro.props;
+const { title, tags, tagline, details, href, iconSrc, linkLabel, slug, index, soon } =
+  Astro.props;
 const tagLine = tags.join(' · ');
-
-// An app that isn't open yet has nowhere to go, so its card isn't a link.
-const Tag = href ? 'a' : 'div';
-const link = href ? { href, target: '_blank', rel: 'noopener noreferrer' } : {};
+const descId = `card-${slug}-more`;
 ---
 
-<Tag
+<article
   class:list={['app-card', { 'is-soon': soon }]}
   id={`card-${slug}`}
   data-app={slug}
-  {...link}
   style={{ '--stagger': index }}
 >
   <span class="app-card__media" aria-hidden="true">
@@ -23,135 +20,343 @@ const link = href ? { href, target: '_blank', rel: 'noopener noreferrer' } : {};
       class="app-card__icon"
       src={iconSrc}
       alt=""
-      width="120"
-      height="120"
-      loading={index === 0 ? 'eager' : 'lazy'}
+      width="112"
+      height="112"
+      loading={index < 3 ? 'eager' : 'lazy'}
       decoding="async"
       {...(index === 0 ? { fetchpriority: 'high' } : {})}
     />
   </span>
-  <span class="app-card__footer">
-    <span class="app-card__meta">
+
+  <div class="app-card__body">
+    <h2 class="app-card__head">
       <span class="app-card__title">{title}</span>
       <span class="app-card__tags">{tagLine}</span>
-    </span>
-    {soon ? <span class="app-card__soon">Coming soon</span> : <span class="app-card__label">{linkLabel}</span>}
-  </span>
-</Tag>
+    </h2>
+    <p class="app-card__tagline">{tagline}</p>
+    <div class="app-card__more">
+      <div class="app-card__clip">
+        <ul class="app-card__details" id={descId}>
+          {details.map((d) => <li>{d}</li>)}
+        </ul>
+      </div>
+    </div>
+    <div class="app-card__foot">
+      {soon ? (
+        <span class="app-card__soon">Coming soon</span>
+      ) : (
+        <a class="app-card__link" href={href} target="_blank" rel="noopener noreferrer">
+          {linkLabel}
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" /></svg>
+        </a>
+      )}
+      <button
+        type="button"
+        class="app-card__toggle"
+        aria-expanded="false"
+        aria-controls={descId}
+        aria-label={`More about ${title}`}
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+      </button>
+    </div>
+  </div>
+</article>
 
 <style>
   .app-card {
-    --radius: clamp(1.25rem, 3vw, 1.75rem);
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    position: relative;
+    flex: 0 0 264px;
+    /* Fits the longest open list exactly; the closed media fills the rest */
+    height: 430px;
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
-    padding: 1.5rem 1.5rem 1.25rem;
-    min-height: 100%;
-    text-decoration: none;
-    color: inherit;
+    scroll-snap-align: start;
     background: var(--card-bg);
-    border-radius: var(--radius);
+    border: 1px solid var(--border-subtle);
+    border-radius: 28px;
+    overflow: hidden;
     box-shadow:
       0 1px 2px var(--card-shadow-1),
-      0 8px 24px var(--card-shadow-2);
-    border: 1px solid var(--border-subtle);
-    transform-origin: center;
+      0 8px 24px -10px var(--card-shadow-2);
     transition:
-      transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
-      box-shadow 0.28s cubic-bezier(0.22, 1, 0.36, 1),
-      border-color 0.28s ease;
-    animation: card-in 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
-    animation-delay: calc(var(--stagger) * 85ms);
+      transform 0.35s var(--ease),
+      box-shadow 0.35s var(--ease),
+      border-color 0.25s ease;
+    animation: card-in 0.65s var(--ease) backwards;
+    animation-delay: calc(var(--stagger) * 70ms);
   }
 
-  .app-card:hover,
-  .app-card:focus-visible {
-    transform: scale(1.02);
+  .app-card:hover {
+    border-color: var(--border-strong);
     box-shadow:
       0 2px 8px var(--card-shadow-hover-1),
-      0 16px 40px var(--card-shadow-hover-2);
-    border-color: var(--border-strong);
+      0 18px 40px -16px var(--card-shadow-hover-2);
   }
 
-  .app-card:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 3px;
+  /* Per-app mesh colours behind the icon, link colour and icon glow */
+  .app-card[data-app='harvous'] { --c1: #4facfe; --c2: #a6e1ff; --c3: #2f7bf0; --c4: #b8c8ff; --c5: #7cbcfa; --ink: #0a5ad1; --glow: rgb(0 90 220 / 0.5); }
+  .app-card[data-app='heresmychurch'] { --c1: #f6e2c4; --c2: #7a3fc4; --c3: #f0b9a2; --c4: #e7b2c9; --c5: #f5ece0; --ink: #6b21a8; --glow: rgb(60 20 120 / 0.5); }
+  .app-card[data-app='revisemy'] { --c1: #ffb42e; --c2: #fff09a; --c3: #ff9f5a; --c4: #ffd96b; --c5: #ffe08f; --ink: #7a4d00; --glow: rgb(150 100 0 / 0.45); }
+  .app-card[data-app='koati'] { --c1: #1fe06b; --c2: #c9f56a; --c3: #17e8b7; --c4: #8ff0c0; --c5: #6fe9a6; --ink: #0b5a2c; --glow: rgb(10 120 60 / 0.4); }
+  .app-card[data-app='dinky'] { --c1: #6c5cff; --c2: #a8c4ff; --c3: #9b6bff; --c4: #c6c0ff; --c5: #9a9cff; --ink: #2a19d6; --glow: rgb(40 20 200 / 0.5); }
+  .app-card[data-app='binky'] { --c1: #ff5c94; --c2: #ffc0a0; --c3: #ff8fb8; --c4: #ff9e7a; --c5: #ffb3cc; --ink: #b80d45; --glow: rgb(200 10 70 / 0.45); }
+
+  @media (prefers-color-scheme: dark) {
+    .app-card[data-app='harvous'] { --c1: #1a4f9c; --c2: #0e7ab8; --c3: #123a7a; --c4: #3a3f9a; --c5: #1b4f8f; --ink: #8cc4ff; }
+    .app-card[data-app='heresmychurch'] { --c1: #5a2f8a; --c2: #6b4a3a; --c3: #4a2470; --c4: #6a2e5e; --c5: #3e2266; --ink: #d4b8e8; }
+    .app-card[data-app='revisemy'] { --c1: #8a5a0a; --c2: #6e5a10; --c3: #7a3e12; --c4: #5e480c; --c5: #4d3a0c; --ink: #ffd166; }
+    .app-card[data-app='koati'] { --c1: #0f7a42; --c2: #4a6e10; --c3: #0c6e5a; --c4: #1a5a3e; --c5: #135c3a; --ink: #6eeaa4; }
+    .app-card[data-app='dinky'] { --c1: #3f2fc2; --c2: #2d4aa8; --c3: #5a2fb8; --c4: #2a2580; --c5: #33309a; --ink: #b3abff; }
+    .app-card[data-app='binky'] { --c1: #a0204e; --c2: #8a4030; --c3: #7a1840; --c4: #9a3a2a; --c5: #6e1838; --ink: #ff9cbd; }
   }
 
   .app-card__media {
-    flex: 1;
+    flex: none;
+    height: 227px;
+    margin: 10px 10px 0;
+    border-radius: 20px;
+    background: var(--c5);
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 9rem;
+    transition: height 0.45s var(--ease);
+  }
+
+  /* A mesh gradient: five of the app's colours pooled around the area, each blending
+     into its neighbours, so there's colour right to every edge. Oversized so it can drift. */
+  .app-card__media::before {
+    content: '';
+    position: absolute;
+    inset: -25%;
+    z-index: -1;
+    background:
+      radial-gradient(at 14% 16%, var(--c1) 0, transparent 52%),
+      radial-gradient(at 86% 14%, var(--c2) 0, transparent 48%),
+      radial-gradient(at 80% 86%, var(--c3) 0, transparent 52%),
+      radial-gradient(at 16% 84%, var(--c4) 0, transparent 50%),
+      radial-gradient(at 52% 48%, var(--c5) 0, transparent 46%),
+      var(--c5);
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+    transition: transform 1.6s var(--ease);
+  }
+
+  @keyframes mesh-drift {
+    0% { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
+    50% { transform: translate3d(-2.5%, 2%, 0) rotate(3deg) scale(1.04); }
+    100% { transform: translate3d(2%, -1.5%, 0) rotate(-2deg) scale(1.02); }
+  }
+
+  @media (hover: hover) {
+    .app-card:hover .app-card__media::before {
+      animation: mesh-drift 10s ease-in-out infinite alternate;
+    }
   }
 
   .app-card__icon {
-    width: clamp(5rem, 28vw, 7.5rem);
-    height: auto;
-    aspect-ratio: 1;
-    object-fit: contain;
-    border-radius: 22%;
-    filter: drop-shadow(0 12px 28px var(--icon-drop-shadow));
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 112px;
+    height: 112px;
+    /* Matches the corner baked into ReviseMy's icon (a 79px radius on 256px), so every icon and its shadow share one shape. */
+    border-radius: 31%;
+    object-fit: cover;
+    box-shadow: 0 16px 32px -12px var(--glow);
+    transition:
+      width 0.45s var(--ease),
+      height 0.45s var(--ease),
+      top 0.45s var(--ease),
+      left 0.45s var(--ease),
+      transform 0.45s var(--ease);
   }
 
-  .app-card__footer {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-top: auto;
-    padding-top: 0.25rem;
+  .app-card.is-open .app-card__media {
+    height: 64px;
   }
 
-  .app-card__meta {
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-    min-width: 0;
-  }
-
-  .app-card__title {
-    font-weight: 600;
-    font-size: 1.08rem;
-    letter-spacing: -0.02em;
-    color: var(--text);
-  }
-
-  .app-card__tags {
-    font-size: 0.82rem;
-    color: var(--muted);
-  }
-
-  .app-card__label {
-    flex-shrink: 0;
-    font-size: 0.82rem;
-    font-weight: 500;
-    color: var(--muted);
-  }
-
-  .app-card__soon {
-    flex-shrink: 0;
-    padding: 0.28rem 0.6rem;
-    border-radius: 999px;
-    background: color-mix(in oklch, var(--accent) 14%, var(--card-bg));
-    color: var(--accent);
-    font-size: 0.75rem;
-    font-weight: 600;
-    line-height: 1;
-    white-space: nowrap;
-  }
-
-  /* Nothing to open yet, so it doesn't lift like a link does. */
-  .app-card.is-soon:hover {
+  /* Opened: the icon tucks into the top-left corner */
+  .app-card.is-open .app-card__icon {
+    top: 10px;
+    left: 10px;
+    width: 44px;
+    height: 44px;
     transform: none;
   }
 
-  .app-card.is-drop-target {
-    outline: 2px dashed var(--accent);
-    outline-offset: 4px;
-    border-radius: inherit;
-    background: color-mix(in oklch, var(--accent) 14%, var(--card-bg));
+  /* Footer controls share one shape: 44px tall, fully round, filled not outlined */
+  .app-card__toggle {
+    flex: none;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border-radius: 50%;
+    border: 0;
+    background: color-mix(in oklch, var(--text) 6%, var(--card-bg));
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition:
+      transform 0.3s var(--ease),
+      background-color 0.2s ease,
+      color 0.2s ease;
+  }
+
+  .app-card__toggle:hover {
+    background: color-mix(in oklch, var(--text) 11%, var(--card-bg));
+  }
+
+  .app-card.is-open .app-card__toggle {
+    transform: rotate(45deg);
+  }
+
+  .app-card__toggle:focus-visible,
+  .app-card__link:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 2px;
+  }
+
+  .app-card__body {
+    flex: 1;
+    min-height: 0;
+    padding: 18px 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .app-card__head {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    font: inherit;
+  }
+
+  .app-card__title {
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .app-card__tags {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .app-card__tagline {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: var(--text-soft);
+  }
+
+  /* The list slides open in step with the media shrinking, instead of popping in. */
+  /* Sits right on the divider, so the list rises out from behind it */
+  .app-card__more {
+    margin-top: auto;
+    display: grid;
+    grid-template-rows: 1fr;
+    opacity: 1;
+    visibility: visible;
+    transition:
+      grid-template-rows 0.45s var(--ease),
+      opacity 0.3s ease 0.08s,
+      visibility 0s;
+  }
+
+  /* Closed: collapsed, faded, and hidden from screen readers once the slide finishes */
+  :global(html.js) .app-card:not(.is-open) .app-card__more {
+    grid-template-rows: 0fr;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      grid-template-rows 0.45s var(--ease),
+      opacity 0.15s ease,
+      visibility 0s 0.45s;
+  }
+
+  /* The clipping edge is the divider: the list is pinned to the bottom of the opening box */
+  .app-card__clip {
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .app-card__details {
+    flex: none;
+    margin: 4px 0 8px;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 13.5px;
+    line-height: 1.4;
+    color: var(--muted);
+  }
+
+  .app-card__details li {
+    position: relative;
+    padding-left: 14px;
+  }
+
+  .app-card__details li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ink);
+  }
+
+  /* Closed cards keep their description out of sight once the toggle script is running. */
+  .app-card__foot {
+    padding-top: 14px;
+    border-top: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .app-card__link,
+  .app-card__soon {
+    min-width: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 44px;
+    padding: 0 16px;
+    border-radius: 999px;
+    background: color-mix(in oklch, var(--text) 6%, var(--card-bg));
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+  }
+
+  .app-card__link:hover {
+    background: color-mix(in oklch, var(--text) 11%, var(--card-bg));
+  }
+
+  .app-card__link svg {
+    flex: none;
   }
 
   @keyframes card-in {
@@ -165,17 +370,24 @@ const link = href ? { href, target: '_blank', rel: 'noopener noreferrer' } : {};
     }
   }
 
-  @media (prefers-reduced-motion: reduce) {
+  @media (max-width: 40rem) {
     .app-card {
-      animation: none;
-      opacity: 1;
-      transform: none;
+      flex-basis: 84vw;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .app-card,
+    .app-card__media,
+    .app-card__icon,
+    .app-card__toggle,
+    .app-card__media::before {
+      animation: none !important;
       transition: none;
     }
 
-    .app-card:hover,
-    .app-card:focus-visible {
-      transform: none;
+    .app-card__more {
+      transition: none !important;
     }
   }
 </style>

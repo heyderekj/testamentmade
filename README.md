@@ -14,8 +14,10 @@ Icons are committed under `public/icons/` (not loaded from GitHub at runtime).
 | Binky   | [heyderekj/binky](https://github.com/heyderekj/binky) — same path on `main` |
 | Harvous | [harvous.com](https://github.com/heyderekj/harvous.com) — `public/images/harvous-2-icon.png` |
 | ReviseMy | [heyderekj/revisemy](https://github.com/heyderekj/revisemy) — `public/images/app-icon.png` |
+| Koati   | The woven-tile K mark, resized to 512px |
+| Here’s My Church | Cropped from [heresmychurch](https://github.com/heyderekj/heresmychurch) `public/og-image.png` (the repo has no large icon yet) |
 
-To refresh icons: download the latest files from those paths, replace `public/icons/{dinky,binky,harvous,revisemy}.png`, then commit.
+To refresh icons: download the latest files from those paths, replace `public/icons/{dinky,binky,harvous,revisemy,koati,heresmychurch}.png`, then commit.
 
 ## Content
 
