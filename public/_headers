@@ -7,7 +7,7 @@
 /icons/*
   Cache-Control: public, max-age=31536000, immutable
 
-/favicon.svg
+/favicon-2.svg
   Cache-Control: public, max-age=31536000, immutable
 
 /_astro/*

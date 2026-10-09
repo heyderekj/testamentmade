@@ -91,7 +91,7 @@ export const apps: AppEntry[] = [
       'Whoever asked can see where it stands',
       'Hands tasks to the tools your team already uses',
     ],
-    iconSrc: '/icons/koati.png',
+    iconSrc: '/icons/koati-2.png',
     soon: true,
   },
   {
